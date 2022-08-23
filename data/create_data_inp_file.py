@@ -23,6 +23,7 @@ def usage():
 
 def main():
 
+    total_count=dimension_x * dimension_y * dimension_z
     count=0
 
     f_lons = open("./fang_inp/lons")
