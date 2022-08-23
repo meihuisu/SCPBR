@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 
 ##
-#  Retrieve the latlons form the original data txt file and
-#  and retrieve the material properties from binary vp.dat file 
+#  create scpbr.data.txt from fang_inp
 #
 
 import getopt
@@ -18,80 +17,26 @@ if sys.version_info.major >= (3) :
 else:
   from urllib2 import urlopen
 
-model = "FANG"
+model = "SCPBR"
 
-dimension_x = 0 
-dimension_y = 0 
-dimension_z = 0 
+## initial fang_inp data dimensions
+dimension_x = 32
+dimension_y = 32 
+dimension_z = 16 
+step_z =0.5
 
-lon_origin = 0
-lat_origin = 0
-
-lon_upper = 0
-lat_upper = 0
+## output dimension
 
 def usage():
-    print("\n./make_data_files.py\n\n")
+    print("\n./create_data_file.py\n\n")
     sys.exit(0)
 
 
+def _offset(x_pos, y_pos, z_pos):
+   offset=z_pos * (dimension_y * dimension_x) + (y_pos * dimension_x) + x_pos
+   return offset
+
 def main():
-
-    # Set our variable defaults.
-    path = ""
-    mdir = ""
-
-    try:
-        fp = open('./config','r')
-    except:
-        print("ERROR: failed to open config file")
-        sys.exit(1)
-
-    ## look for model_data_path and other varaibles
-    lines = fp.readlines()
-    for line in lines :
-        if line[0] == '#' :
-          continue
-        parts = line.split('=')
-        if len(parts) < 2 :
-          continue;
-        variable=parts[0].strip()
-        val=parts[1].strip()
-
-        if (variable == 'model_data_path') :
-            path = val + '/' + model
-            continue
-        if (variable == 'model_dir') :
-            mdir = "./"+val
-            continue
-        if (variable == 'nx') :
-            dimension_x = int(val)
-            continue
-        if (variable == 'ny') :
-            dimension_y = int(val)
-            continue
-        if (variable == 'nz') :
-            dimension_z = int(val)
-            continue
-        if (variable == 'bottom_left_corner_lon') :
-            lon_origin = float(val)
-            continue
-        if (variable == 'bottom_left_corner_lat') :
-            lat_origin = float(val)
-            continue
-        if (variable == 'top_right_corner_lon') :
-            lon_upper = float(val)
-            continue
-        if (variable == 'top_right_corner_lat') :
-            lat_upper = float(val)
-            continue
-
-        continue
-    if path == "" :
-        print("ERROR: failed to find variables from config file")
-        sys.exit(1)
-
-    fp.close()
 
     total_count = dimension_x * dimension_y * dimension_z
     count=0
@@ -157,30 +102,74 @@ def main():
           lon_d_list.append(round(lon-x_last,2))
           x_last=lon
         
-    print(dep_d_list)
-    print(lat_d_list)
-    print(lon_d_list)
+    print("dep_list ",dep_list)
+    print("dep_d_list ",dep_d_list)
+#    print("lat_d_list ",lat_d_list)
+#    print("lon_d_list ",lon_d_list)
 
     f_depth.close()
     f_lats.close()
     f_lons.close()
 
     ftxt = open('scpbr.dat.txt','w')
+
+#[-1.5,0.0,1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0,11.0,13.0,16.0,20.0]
+# need to transform to
+# [0.0 ... 21.5]
+# and step is 0.5
+
     offset=0
+    z_index=0
+    dep_next=0;
+    new_zidx_list=[]
+    new_z_list=[]
+    new_dep_list=[]
     for z in dep_list:
+       repeat=1
+       if(z_index < dimension_z-1) :
+         dep_d=dep_d_list[z_index]
+         repeat=dep_d/step_z
+         i=0 
+         while i<repeat:
+           new_zidx_list.append(z_index) 
+           new_dep_list.append(dep_list[z_index]);
+           i=i+1
+#         print("z_index >", z_index,"for z ",z," dep_d repeat .. ",repeat);
+         zlist=np.arange(dep_next, dep_next+dep_d, 0.5);
+         for k in zlist:
+           new_z_list.append(k)
+         dep_next=zlist[-1]+step_z
+       else:
+         print("last one for z ",z, " repeat .. ",repeat);
+         new_z_list.append(dep_next);
+         new_zidx_list.append(z_index)
+         new_dep_list.append(dep_list[z_index]);
+
+#       print(zlist)
+       z_index=z_index+1
+## repeat the following with different z but save vp_arr, and vs_arr       
+    print("new_z_list",new_z_list)
+    print("new_zidx_list",new_zidx_list)
+    print("new_dep_list",new_dep_list)
+    print(len(new_zidx_list))
+
+    idx=0
+    for z in new_z_list:
+       use_z=new_zidx_list[idx]
+
+       use_y=0
        for y in lat_list:
+           use_x=0
            for x in lon_list:
+              offset=_offset(use_x, use_y, use_z)
               aline= str(x)+" "+str(y)+" "+str(z)+" "+str(vp_arr[offset])+" "+str(vs_arr[offset])+"\n";
+
               ftxt.write(aline);
-              offset=offset+1
+              use_x=use_x+1
+           use_y=use_y+1
+
     ftxt.close()
 
-#    fvp = open('vp.dat')
-#    fvs = open('vs.dat)
-
-#    print("retrieve..", dimension_x * dimension_y * dimension_z)
-#    print("vp size >> ",np.shape(vp_arr))
-#    print("vs size >> ",np.shape(vs_arr))
 #    print(dep_list)
 #    print(lat_list)
 #    print(lon_list)
