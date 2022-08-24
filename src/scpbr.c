@@ -197,11 +197,10 @@ void scpbr_read_properties(int x, int y, int z, scpbr_properties_t *data) {
 		// Read from memory.
 		ptr = (float *)scpbr_velocity_model->vp;
 		data->vp = ptr[location];
-//fprintf(stderr,"XX read from location memory %d, %lf\n", location, data
-                   ->vp);
+//fprintf(stderr,"XX read from location memory %d, %lf\n", location, data ->vp);
 	} else if (scpbr_velocity_model->vp_status == 1) {
 	 	// Read from file.
-                fp=model->vp;
+		fp = (FILE *)scpbr_velocity_model->vp;
 		fseek(fp, location * sizeof(float), SEEK_SET);
 		fread(&(data->vp), sizeof(float), 1, fp);
 //fprintf(stderr,"XX read from location file %d, %lf\n", location, data->vp);
@@ -214,7 +213,7 @@ void scpbr_read_properties(int x, int y, int z, scpbr_properties_t *data) {
 //fprintf(stderr,"XX read from location memory %d, %lf\n", location, data->vs);
 	} else if (scpbr_velocity_model->vs_status == 1) {
 		// Read from file.
-                fp=model->vs;
+		fp = (FILE *)scpbr_velocity_model->vs;
 		fseek(fp, location * sizeof(float), SEEK_SET);
 		fread(&(data->vs), sizeof(float), 1, fp);
 //fprintf(stderr,"XX read from location file %d, %lf\n", location, data->vs);

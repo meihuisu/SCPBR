@@ -99,6 +99,10 @@ typedef struct scpbr_model_t {
 	void *vp;
 	/** Vp status: 0 = not found, 1 = found and not in memory, 2 = found and in memory */
 	int vp_status;
+	/** A pointer to the Vs data either in memory or disk. Null if does not exist. */
+	void *vs;
+	/** Vs status: 0 = not found, 1 = found and not in memory, 2 = found and in memory */
+	int vs_status;
 } scpbr_model_t;
 
 // Constants
