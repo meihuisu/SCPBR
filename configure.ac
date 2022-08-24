@@ -1,10 +1,9 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_PREREQ(2.61)
 AC_INIT(SCPBR, 1.0, mei@usc.edu)
 AC_CONFIG_SRCDIR([src])
-AM_INIT_AUTOMAKE()
+AM_INIT_AUTOMAKE([foreign no-exeext])
 
 # Checks for programs.
 AC_PROG_CC
@@ -21,8 +20,8 @@ AC_C_CONST
 # Checks for library functions.
 
 # Set final CFLAGS and LDFLAGS
-CFLAGS="$CHECK_CFLAGS $ETREE_INCL $PROJ4_INCL"
-LDFLAGS="$CHECK_LDFLAGS $ETREE_LIB $PROJ4_LIB"
+CFLAGS="$CHECK_CFLAGS"
+LDFLAGS="$CHECK_LDFLAGS"
 LDFLAGS="$LDFLAGS -lm"
 
 AC_CONFIG_FILES([Makefile
