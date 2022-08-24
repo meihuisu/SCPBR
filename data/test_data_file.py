@@ -47,8 +47,9 @@ def main():
 
     f_inp=open("./scpbr_inp.dat.txt");
     flines=f_inp.readlines()
-    fclose(f_inp)
+    f_inp.close()
 
+    lcnt=0;
     for line in flines :
        arr = line.split(' ')
        t_lon=float(arr[0])
@@ -58,17 +59,20 @@ def main():
        t_vs=float(arr[4])
        off_x= int(round((t_lon - lon_origin)/delta_lon))
        off_y= int(round((t_lat - lat_origin)/delta_lat))
-       off_z= int(rount((t_z - 1.5) / 0.5))
+       off_z= int(round((t_dep + 1.5) / 0.5))
        offset= off_z * (dimension_y * dimension_x) + (off_y * dimension_x) + off_x
-       print("off_x ",off_x, "off_y ",off_y,"off_z ",off_z);
-       n_vp=vp_arr[offset]
-       n_vs=vs_arr[offset]
+       n_vp=vp_arr[offset]/1000
+       n_vs=vs_arr[offset]/1000
        if(t_vp != n_vp) :
-          print(" NO match vp ",t_vp, " with ", n_vp)
+          print(lcnt," >>",line)
+          print("off_x",off_x,"off_y",off_y,"off_z",off_z,"t_dep ",t_dep);
+          print(" NO match vp expecting",t_vp,"but got",n_vp,"at offset",offset)
           exit(1)
        if(t_vs != n_vs) :
+          print("off_x ",off_x, "off_y ",off_y,"off_z ",off_z);
           print(" NO match vs ",t_vs, " with ", n_vs)
           exit(1)
+       lcnt=lcnt+1
 
     print("Done!")
 

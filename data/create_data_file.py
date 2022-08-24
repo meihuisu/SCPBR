@@ -34,6 +34,7 @@ def usage():
 
 def _offset(x_pos, y_pos, z_pos):
    offset=z_pos * (dimension_y * dimension_x) + (y_pos * dimension_x) + x_pos
+#   print("x",x_pos,"y",y_pos,"z",z_pos, "offset", offset);
    return offset
 
 def main():
@@ -163,10 +164,10 @@ def main():
            for x in lon_list:
               offset=_offset(use_x, use_y, use_z)
               aline= str(x)+" "+str(y)+" "+str(z)+" "+str(vp_arr[offset])+" "+str(vs_arr[offset])+"\n";
-
               ftxt.write(aline);
               use_x=use_x+1
            use_y=use_y+1
+       idx=idx+1
 
     ftxt.close()
 
