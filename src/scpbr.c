@@ -114,7 +114,8 @@ int scpbr_query(scpbr_point_t *points, scpbr_properties_t *data, int numpoints) 
 //fprintf(stderr,"coord %d %d %d\n", load_x_coord, load_y_coord, load_z_coord);
 
 		// Are we outside the model's X and Y and Z boundaries?
-		if (points[i].depth > scpbr_configuration->depth || load_x_coord > scpbr_configuration->nx -1  || load_y_coord > scpbr_configuration->ny -1 || load_x_coord < 0 || load_y_coord < 0 || load_z_coord < 0) {
+		if (points[i].depth > scpbr_configuration->depth || load_x_coord > scpbr_configuration->nx -1  
+                   || load_y_coord > scpbr_configuration->ny -1 || load_x_coord < 0 || load_y_coord < 0 || load_z_coord < 0) {
 			data[i].vp = -1;
 			data[i].vs = -1;
 			data[i].rho = -1;
@@ -164,7 +165,7 @@ delta_lat;
 		}
 
 	       data[i].rho = scpbr_calculate_density(data[i].vp);
-	       data[i].vs = scpbr_calculate_vs(data[i].vp);
+// XXX	       data[i].vs = scpbr_calculate_vs(data[i].vp);
 	}
 
 	return SUCCESS;
@@ -196,12 +197,27 @@ void scpbr_read_properties(int x, int y, int z, scpbr_properties_t *data) {
 		// Read from memory.
 		ptr = (float *)scpbr_velocity_model->vp;
 		data->vp = ptr[location];
-//fprintf(stderr,"XX read from location memory %d, %lf\n", location, data->vp);
+//fprintf(stderr,"XX read from location memory %d, %lf\n", location, data
+                   ->vp);
 	} else if (scpbr_velocity_model->vp_status == 1) {
-		// Read from file.
+	 	// Read from file.
+                fp=model->vp;
 		fseek(fp, location * sizeof(float), SEEK_SET);
 		fread(&(data->vp), sizeof(float), 1, fp);
 //fprintf(stderr,"XX read from location file %d, %lf\n", location, data->vp);
+	}
+
+	if (scpbr_velocity_model->vs_status == 2) {
+		// Read from memory.
+		ptr = (float *)scpbr_velocity_model->vs;
+		data->vs = ptr[location];
+//fprintf(stderr,"XX read from location memory %d, %lf\n", location, data->vs);
+	} else if (scpbr_velocity_model->vs_status == 1) {
+		// Read from file.
+                fp=model->vs;
+		fseek(fp, location * sizeof(float), SEEK_SET);
+		fread(&(data->vs), sizeof(float), 1, fp);
+//fprintf(stderr,"XX read from location file %d, %lf\n", location, data->vs);
 	}
 }
 
@@ -216,7 +232,7 @@ void scpbr_read_properties(int x, int y, int z, scpbr_properties_t *data) {
  * @param ret_properties Returned data properties
  */
 void scpbr_trilinear_interpolation(double x_percent, double y_percent, double z_percent,
-							 scpbr_properties_t *eight_points, scpbr_properties_t *ret_properties) {
+					 scpbr_properties_t *eight_points, scpbr_properties_t *ret_properties) {
 	scpbr_properties_t *temp_array = calloc(2, sizeof(scpbr_properties_t));
 	scpbr_properties_t *four_points = eight_points;
 
@@ -494,6 +510,23 @@ int scpbr_try_reading_model(scpbr_model_t *model) {
 			all_read_to_memory = 0;
 			model->vp = fopen(current_file, "rb");
 			model->vp_status = 1;
+		}
+		file_count++;
+	}
+
+	sprintf(current_file, "%s/vs.dat", scpbr_data_directory);
+	if (access(current_file, R_OK) == 0) {
+		model->vs = malloc(base_malloc);
+		if (model->vs != NULL) {
+			// Read the model in.
+			fp = fopen(current_file, "rb");
+			fread(model->vs, 1, base_malloc, fp);
+			fclose(fp);
+			model->vs_status = 2;
+		} else {
+			all_read_to_memory = 0;
+			model->vs = fopen(current_file, "rb");
+			model->vs_status = 1;
 		}
 		file_count++;
 	}

@@ -139,7 +139,9 @@ def main():
     x_pos=0;
     y_pos=0;
     z_pos=0;
+    count=0;
     for line in f:
+        count=count+1
         arr = line.split()
 
         vp = -1.0
@@ -176,6 +178,7 @@ def main():
     f_vp.close()
     f_vs.close()
 
+    print ("number of lines..",count)
     print("Done!")
 
 if __name__ == "__main__":
