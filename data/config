@@ -14,7 +14,7 @@ ny = 32
 nz = 44 
 
 # Depth, in meters (-1.5km to 20km)
-depth = 21.5
+depth = 21500
 depth_interval =  500
 
 # Corners, in LATLON 
