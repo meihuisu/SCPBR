@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 
-##
+#
+#  create Vp.dat and Vs.dat from
+#  from SJFZ_Fangetal2016_VpandVs.csv
+#
+
 
 import getopt
 import sys
@@ -10,104 +14,44 @@ import numpy as np
 import array
 import pdb
 
-model = "SCPBR"
-
-dimension_x =  32
-dimension_y =  32 
+dimension_x =  94
+dimension_y =  73
 dimension_z =  16 
 
 def usage():
     print("\n./create_data_inp_file.py\n\n")
     sys.exit(0)
 
-
 def main():
 
     total_count=dimension_x * dimension_y * dimension_z
     count=0
 
-    f_lons = open("./fang_inp/lons")
-    f_lats = open("./fang_inp/lats")
-    f_depth = open("./fang_inp/depth")
- 
-    f_vp = open("./fang_inp/Vp.dat")
-    f_vs = open("./fang_inp/Vs.dat")
+    f_mats = open("Fang2016Model/SJFZ_Fangetal2016_VpandVs.csv")
+    vptxt = open('fang_inp/Vp.dat','w')
+    vstxt = open('fang_inp/Vs.dat','w')
 
-    vp_arr = np.fromfile(f_vp, dtype=np.float32, count=total_count, sep=' ')
-    vs_arr = np.fromfile(f_vs, dtype=np.float32, count=total_count, sep=' ')
+    vp_arr = np.genfromtxt("Fang2016Model/SJFZ_Fangetal2016_VpandVs.csv",
+          dtype=np.float32, delimiter=',', skip_header=1,filling_values=9999,usecols=4)
+    vs_arr = np.genfromtxt("Fang2016Model/SJFZ_Fangetal2016_VpandVs.csv",
+          dtype=np.float32, delimiter=',', skip_header=1,filling_values=9999,usecols=5)
 
-    f_vp.close()
-    f_vs.close()
+    print(len(vp_arr))
+    print(len(vs_arr))
+## reshape them
+    vp_3d=np.reshape(vp_arr,(dimension_z,dimension_y,dimension_x))
+    print(len(vp_3d))
+    print(len(vp_3d[0]))
+    print(len(vp_3d[0][0]))
+    print(vp_3d[0][0])
+    sys.exit(0)
 
-    count =0
+#    vptxt.write(vpline);
+#    vstxt.write(vxline);
 
-    dep_list=[]
-    dep_d_list=[]
-    dep=None
-    z_last=None
-    deps=f_depth.readlines()
-    for z in deps:
-        dep=float(z.strip())
-        dep_list.append(dep)
-        if(z_last == None) :
-          z_last=dep
-        else:
-#          print(" >> ",dep," diff(",dep-z_last,")")
-          dep_d_list.append(dep-z_last)
-          z_last=dep
-     
-    lat_list=[]
-    lat_d_list=[]
-    lat=None
-    y_last=None
-    lats=f_lats.readlines()
-    for y in lats:
-        lat=round(float(y.strip()),2)
-        lat_list.append(lat)
-        if(y_last == None) :
-          y_last=lat
-        else:
-#          print(" >> ",lat," diff(",round(lat-y_last,2),")")
-          lat_d_list.append(round(lat-y_last,2))
-          y_last=lat
+    vptxt.close()
+    vstxt.close()
 
-
-    lon_list=[]
-    lon_d_list=[]
-    lon=None
-    x_last=None
-    lons=f_lons.readlines()
-    for x in lons:
-        lon=round((float(x.strip())-360.0),2)
-        lon_list.append(lon)
-        if(x_last == None) :
-          x_last=lon
-        else:
-#          print(" >> ",lon," diff(",round(lon-x_last,2),")")
-          lon_d_list.append(round(lon-x_last,2))
-          x_last=lon
-        
-    print(dep_d_list)
-    print(lat_d_list)
-    print(lon_d_list)
-
-    f_depth.close()
-    f_lats.close()
-    f_lons.close()
-
-    ftxt = open('scpbr_inp.dat.txt','w')
-    offset=0
-    for z in dep_list:
-       for y in lat_list:
-           for x in lon_list:
-              aline= str(x)+" "+str(y)+" "+str(z)+" "+str(vp_arr[offset])+" "+str(vs_arr[offset])+"\n";
-              ftxt.write(aline);
-              offset=offset+1
-    ftxt.close()
-
-#    print(dep_list)
-#    print(lat_list)
-#    print(lon_list)
     print("\nDone!")
 
 if __name__ == "__main__":

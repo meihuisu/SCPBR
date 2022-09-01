@@ -5,12 +5,12 @@ utm_zone = 11
 model_dir = scpbr 
 model_data_path  = https://g-c662a6.a78b8.36fe.data.globus.org/ucvm/models
 
-## origin: (-116.7,33.3)
-## upper: (-115.7, 34.2)
+## origin: (-118.17, 32.38)
+## upper: (-115.38, 34.54)
 
 # Number of cells in x, y, and z.
-nx = 32 
-ny = 32 
+nx = 94 
+ny = 73
 nz = 44 
 
 # Depth, in meters (-1.5km to 20km)
@@ -25,10 +25,10 @@ bottom_left_corner_lon  = -118.17
 bottom_left_corner_lat  = 32.38
 
 top_right_corner_lon  	= -115.38
-top_right_corner_lat	= 34.55
+top_right_corner_lat	= 34.54
 
 top_left_corner_lon 	= -118.17
-top_left_corner_lat	= 34.55
+top_left_corner_lat	= 34.54
 
 ## bilinear or trilinear interpolation
 interpolation = off 

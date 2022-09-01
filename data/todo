@@ -1,0 +1,4 @@
+
+need to convert SJFZ_Fangetal2016_VpandVs.csv to Vp.dat and Vs.dat
+then use that to create scpbr.dat.txt 
+then make vp.dat and vs.dat for ucvm

@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 
 ##
-#  create scpbr.data.txt from fang_inp
+#  create scpbr.data.txt from 
+#    Vp.dat and Vs.dat
+#  
 #
 
 import getopt
@@ -12,18 +14,11 @@ import numpy as np
 import array
 import pdb
 
-if sys.version_info.major >= (3) :
-  from urllib.request import urlopen
-else:
-  from urllib2 import urlopen
-
-model = "SCPBR"
-
-## initial fang_inp data dimensions
-dimension_x = 32
-dimension_y = 32 
+## initial data dimensions
+dimension_x = 94
+dimension_y = 73 
 dimension_z = 16 
-step_z =0.5
+step_z =0.5 ## because the first one is -1.5
 
 ## output dimension
 
@@ -42,12 +37,12 @@ def main():
     total_count = dimension_x * dimension_y * dimension_z
     count=0
 
-    f_lons = open("./fang_inp/lons")
-    f_lats = open("./fang_inp/lats")
-    f_depth = open("./fang_inp/depth")
+    f_lons = open("./Fang2016Model/lons")
+    f_lats = open("./Fang2016Model/lats")
+    f_depth = open("./Fang2016Model/depth")
  
-    f_vp = open("./fang_inp/Vp.dat")
-    f_vs = open("./fang_inp/Vs.dat")
+    f_vp = open("./Fang2016Model/Vp.dat")
+    f_vs = open("./Fang2016Model/Vs.dat")
 
     vp_arr = np.fromfile(f_vp, dtype=np.float32, count=total_count, sep=' ')
     vs_arr = np.fromfile(f_vs, dtype=np.float32, count=total_count, sep=' ')
@@ -114,11 +109,10 @@ def main():
 
     ftxt = open('scpbr.dat.txt','w')
 
+################# need to transform from this depth list 
 #[-1.5,0.0,1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0,11.0,13.0,16.0,20.0]
-# need to transform to
-# [0.0 ... 21.5]
-# and step is 0.5
-
+# to this depth list with step of 0.5
+# [0.0,0.5,1.0,1.5, ... 21.5]
     offset=0
     z_index=0
     dep_next=0;
@@ -148,7 +142,7 @@ def main():
 
 #       print(zlist)
        z_index=z_index+1
-## repeat the following with different z but save vp_arr, and vs_arr       
+## repeat the following with different z but same vp_arr, and vs_arr       
     print("new_z_list",new_z_list)
     print("new_zidx_list",new_zidx_list)
     print("new_dep_list",new_dep_list)
