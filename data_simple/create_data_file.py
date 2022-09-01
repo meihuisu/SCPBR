@@ -44,6 +44,7 @@ def main():
     total_count = dimension_x * dimension_y * dimension_z
     count=0
 
+    ## these are funny lons (need to subtrace by 360)
     f_lons = open("./fang_inp/lons")
     f_lats = open("./fang_inp/lats")
     f_depth = open("./fang_inp/depth")
