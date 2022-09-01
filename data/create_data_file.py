@@ -37,12 +37,13 @@ def main():
     total_count = dimension_x * dimension_y * dimension_z
     count=0
 
+    ## lons are regular lons
     f_lons = open("./Fang2016Model/lons")
     f_lats = open("./Fang2016Model/lats")
     f_depth = open("./Fang2016Model/depth")
  
-    f_vp = open("./Fang2016Model/Vp.dat")
-    f_vs = open("./Fang2016Model/Vs.dat")
+    f_vp = open("./fang_inp/Vp.dat")
+    f_vs = open("./fang_inp/Vs.dat")
 
     vp_arr = np.fromfile(f_vp, dtype=np.float32, count=total_count, sep=' ')
     vs_arr = np.fromfile(f_vs, dtype=np.float32, count=total_count, sep=' ')
@@ -89,7 +90,7 @@ def main():
     x_last=None
     lons=f_lons.readlines()
     for x in lons:
-        lon=round((float(x.strip())-360.0),2)
+        lon=round(float(x.strip()),2)
         lon_list.append(lon)
         if(x_last == None) :
           x_last=lon
