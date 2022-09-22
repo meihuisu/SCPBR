@@ -1,0 +1,16 @@
+steps of recreating the data used by UCVM
+
+create_data_inp_file.py
+   input  -> SJFZ_Fangetal2016_VpandVs.csv
+   output -> fang_inp/Vp.dat fang_inp/Vs.dat
+
+create_data_file.py
+   input -> fang_inp/Vp.dat fang_inp/Vs.dat
+            lons/lats/depth
+   expand into full volume -> scpbr.data.txt
+
+make_data_files.py
+   input  -> scpbr.data.txt
+   output -> scpbr/vp.dat scpbr/vs.dat (binary files)
+
+

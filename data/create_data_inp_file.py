@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 #
-#  create Vp.dat and Vs.dat from
+#  create fang_inp/Vp.dat and fang_inp/Vs.dat from
 #  from SJFZ_Fangetal2016_VpandVs.csv
 #
 

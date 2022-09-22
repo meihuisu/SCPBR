@@ -115,6 +115,9 @@ def main():
     delta_lon = (lon_upper - lon_origin )/(dimension_x-1)
     delta_lat = (lat_upper - lat_origin)/(dimension_y-1)
 
+#    print(delta_lon)
+#    print(delta_lat)
+
     print("\nDownloading model file\n")
 
 #    fname="./"+"scpbr.dat.txt"
@@ -173,6 +176,18 @@ def main():
 
     vp_arr.tofile(f_vp)
     vs_arr.tofile(f_vs)
+
+    minvs=min(vs_arr)
+    print("vs min...",minvs)
+    maxvs=max(vs_arr)
+    print("vs max...",maxvs)
+
+    minvp=min(vp_arr)
+    print("vp min...",minvp)
+    maxvp=max(vp_arr)
+    print("vp max...",maxvp)
+
+### are there any -1 values ?
 
     f.close()
     f_vp.close()
