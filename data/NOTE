@@ -1,7 +1,12 @@
 steps of recreating the data used by UCVM
 
-create_data_inp_file.py
+remove_fake_data.py
    input  -> SJFZ_Fangetal2016_VpandVs.csv
+             surfs
+   output  -> SJFZ_Fangetal2016_VpandVs_clean.csv
+
+create_data_inp_file.py
+   input  -> SJFZ_Fangetal2016_VpandVs_clean.csv
    output -> fang_inp/Vp.dat fang_inp/Vs.dat
 
 create_data_file.py
