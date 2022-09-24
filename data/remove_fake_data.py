@@ -36,6 +36,55 @@ def usage():
     print("\n./remove_fake_data.py\n\n")
     sys.exit(0)
 
+def no_need_val(d_val,s_val) :
+    if(d_val < s_val) :
+      return 0
+    else:
+      return 1
+
+def no_need(oline,dep_i) :
+    global tmp
+    l=oline.split(",")
+    vs=float(l[3].strip())
+    vp=float(l[4].strip())
+    if (dep_i == 0) :
+        if ((vs == 5.5) & (vp == 3.14) ):
+          return 0
+    elif (dep_i == 1) :
+        if ((vs == 5.52)  & (vp == 3.16) ):
+          return 0
+    elif ( dep_i == 2 ): 
+        if ((vs == 5.55)  & (vp == 3.17) ):
+          return 0
+    elif ( dep_i == 3 ): 
+        if ((vs == 5.57)  & (vp == 3.18) ):
+          return 0
+    elif ( dep_i == 4 ): 
+        if ((vs == 5.6)  & (vp == 3.2) ):
+          return 0
+    elif ( dep_i == 5 ): 
+        if ((vs == 5.63)  & (vp == 3.22) ):
+          return 0
+    elif ( dep_i == 6 ): 
+        if ((vs == 5.67)  & (vp == 3.24) ):
+          return 0
+    elif ( dep_i == 7 ): 
+        if ((vs == 5.7)  & (vp == 3.26) ):
+          return 0
+    elif ( dep_i == 8 ): 
+        if ((vs == 5.73)  & (vp == 3.28) ):
+          return 0
+    elif ( dep_i == 9 ): 
+        if ((vs == 5.76)  & (vp == 3.29) ):
+          return 0
+    elif ( dep_i == 10 ): 
+        if ((vs == 5.8)  & (vp == 3.31) ):
+          return 0
+    else:
+      return 1
+
+    return 1
+
 #-118.17,32.38,-1.50,5.50,3.14
 # to
 #-118.17,32.38,-1.50,-9.999,-9.999
@@ -85,7 +134,8 @@ def main():
           if(surf_i == 0) : 
              print(dep_list[dep_i])
              print("  first one :",oline.strip())
-          if ( d_val < s_val ) :
+#         if no_need_val(d_val,s_val) :
+          if no_need(oline,dep_i) :
             ## no change
             f_new.write(oline)
             no_rewrite_cnt=no_rewrite_cnt+1
