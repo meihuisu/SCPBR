@@ -2,7 +2,7 @@
 
 #
 #  create fang_inp/Vp.dat and fang_inp/Vs.dat from
-#  from SJFZ_Fangetal2016_VpandVs.csv
+#  from SJFZ_Fangetal2019_VpandVs_clean.csv
 #
 
 
@@ -17,7 +17,7 @@ import pdb
 
 dimension_x =  94
 dimension_y =  73
-dimension_z =  16 
+dimension_z =  64
 
 def usage():
     print("\n./create_data_inp_file.py\n\n")
@@ -33,10 +33,10 @@ def main():
     vptxt=open('fang_inp/Vp.dat','w')
     vstxt=open('fang_inp/Vs.dat','w')
 
-    vp_arr = np.genfromtxt("Fang2016Model/SJFZ_Fangetal2016_VpandVs.csv",
+    vp_arr = np.genfromtxt("FangModel/SJFZ_Fangetal2019_VpandVs_clean.csv",
+          dtype=np.float32, delimiter=',', skip_header=1,filling_values=9999,usecols=3)
+    vs_arr = np.genfromtxt("FangModel/SJFZ_Fangetal2019_VpandVs_clean.csv",
           dtype=np.float32, delimiter=',', skip_header=1,filling_values=9999,usecols=4)
-    vs_arr = np.genfromtxt("Fang2016Model/SJFZ_Fangetal2016_VpandVs.csv",
-          dtype=np.float32, delimiter=',', skip_header=1,filling_values=9999,usecols=5)
 
 #    print(len(vp_arr))
 #    print(len(vs_arr))

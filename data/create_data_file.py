@@ -17,7 +17,7 @@ import pdb
 ## initial data dimensions
 dimension_x = 94
 dimension_y = 73 
-dimension_z = 16 
+dimension_z = 64
 step_z =0.5 ## because the first one is -1.5
 
 ## output dimension
@@ -38,9 +38,9 @@ def main():
     count=0
 
     ## lons are regular lons
-    f_lons = open("./Fang2016Model/lons")
-    f_lats = open("./Fang2016Model/lats")
-    f_depth = open("./Fang2016Model/depth")
+    f_lons = open("./FangModel/lons")
+    f_lats = open("./FangModel/lats")
+    f_depth = open("./FangModel/depth")
  
     f_vp = open("./fang_inp/Vp.dat")
     f_vs = open("./fang_inp/Vs.dat")
@@ -111,9 +111,14 @@ def main():
     ftxt = open('scpbr.dat.txt','w')
 
 ################# need to transform from this depth list 
+# OLD ONE
 #[-1.5,0.0,1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0,11.0,13.0,16.0,20.0]
 # to this depth list with step of 0.5
 # [0.0,0.5,1.0,1.5, ... 21.5]
+#[-1.5,-1.0,-0.5,0,1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0,11.0,...,30.0]
+# to this depth list with step of 0.5
+# [0.0,0.5,1.0,1.5, ... 31.5]
+    offset=0
     offset=0
     z_index=0
     dep_next=0;

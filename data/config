@@ -11,10 +11,10 @@ model_data_path  = https://g-c662a6.a78b8.36fe.data.globus.org/ucvm/models
 # Number of cells in x, y, and z.
 nx = 94 
 ny = 73
-nz = 44 
+nz = 64
 
-# Depth, in meters (-1.5km to 20km)
-depth = 21500
+# Depth, in meters (-1.5km to 30km)
+depth = 31500
 depth_interval =  500
 
 # Corners, in LATLON 

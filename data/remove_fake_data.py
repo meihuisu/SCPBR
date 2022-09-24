@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
 #
-#  create SJFZ_Fangetal2016_VpandVs_clean.csv
-#  from SJFZ_Fangetal2016_VpandVs.csv
+#  create SJFZ_Fangetal2019_VpandVs_clean.csv
+#  from SJFZ_Fangetal2019_VpVsratio.csv
 #
 #
 ## For both models I sent a couple of weeks ago, we were using the sea 
@@ -13,7 +13,7 @@
 ## Yes. The program using a regular box that contains all events and stations,
 ## thus regions above the free surface are artificial.
 ## (2) How do you suggest separating the actual volume of the crust from 
-## “artificial material” above it?
+## "artificial material" above it?
 ## I would use the real topography as a layer to mask those values; everything 
 ## above the topography should be removed. There will be some interpolation 
 ## problem, but with the resolution we have, it won't matter.
@@ -30,18 +30,18 @@ import pdb
 
 dimension_x =  94
 dimension_y =  73
-dimension_z =  16 
+dimension_z =  64
 
 def usage():
     print("\n./remove_fake_data.py\n\n")
     sys.exit(0)
 
-#0,-118.17,32.38,-1.50,5.50,3.14
+#-118.17,32.38,-1.50,5.50,3.14
 # to
-#0,-118.17,32.38,-1.50,-9999.000,-9999.000
+#-118.17,32.38,-1.50,-9.999,-9.999
 def rewrite_fake(oline):
     l=oline.split(",")
-    nline=l[0]+","+l[1]+","+l[2]+","+l[3]+","+"-9999.000,-9999.000\n"
+    nline=l[0]+","+l[1]+","+l[2]+","+"-9.999,-9.999\n"
     return nline
 
 def main():
@@ -49,7 +49,7 @@ def main():
 
 ## should be 94 x 73
     surf_list=[]
-    f_surf=open('Fang2016Model/surfs','r')
+    f_surf=open('FangModel/surfs','r')
     surfs=f_surf.readlines()
     for s in surfs:
         sur=float(s.strip())
@@ -57,16 +57,16 @@ def main():
     f_surf.close()
 
     dep_list=[]
-    f_depth=open('Fang2016Model/depth','r')
+    f_depth=open('FangModel/depth','r')
     deps=f_depth.readlines()
     for z in deps:
         dep=float(z.strip())
         dep_list.append(dep)
     f_depth.close()
 
-    f_old=open('Fang2016Model/SJFZ_Fangetal2016_VpandVs.csv','r')
+    f_old=open('FangModel/SJFZ_Fangetal2019_VpVsratio.csv','r')
     olds=f_old.readlines()
-    f_new=open('Fang2016Model/SJFZ_Fangetal2016_VpandVs_clean.csv','w')
+    f_new=open('FangModel/SJFZ_Fangetal2019_VpandVs_clean.csv','w')
 
     dep_i=0
     surf_i=0
@@ -76,14 +76,15 @@ def main():
     no_rewrite_cnt = 0
 
     d_val= -1.0 * (dep_list[dep_i]*1000) 
-    print(dep_i," ",dep_list[dep_i])
     for oline in olds:
         ## copy header
         if(f_old_i == 0) : 
           f_new.write(oline)
         else :
           s_val = surf_list[surf_i]
-##          print(d_val," -- ",s_val);
+          if(surf_i == 0) : 
+             print(dep_list[dep_i])
+             print("  first one :",oline.strip())
           if ( d_val < s_val ) :
             ## no change
             f_new.write(oline)
@@ -95,13 +96,12 @@ def main():
             rewrite_cnt=rewrite_cnt+1
           surf_i=surf_i+1
           if(surf_i >= dimension_x * dimension_y) :
-            print("no_rewrite_cnt :",no_rewrite_cnt," at ", d_val)
+            print("  last one :",oline.strip())
+            print("  no_rewrite_cnt :",no_rewrite_cnt," at ", d_val)
             no_rewrite_cnt=0
-            print("last one :",oline)
             surf_i=0;
             dep_i=dep_i+1
             if(dep_i < dimension_z) :
-              print(dep_i," ",dep_list[dep_i])
               d_val= -1.0 * (dep_list[dep_i]*1000) 
         f_old_i = f_old_i+1 
 

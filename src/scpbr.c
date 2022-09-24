@@ -218,6 +218,13 @@ void scpbr_read_properties(int x, int y, int z, scpbr_properties_t *data) {
 		fread(&(data->vs), sizeof(float), 1, fp);
 //fprintf(stderr,"XX read from location file %d, %lf\n", location, data->vs);
 	}
+
+        // if either vs or vp is -99999.0  means it is invalid
+        if(data->vs == -99999.0 || data->vp == -99999.0) {
+	  data->vp = -1;
+	  data->vs = -1;
+fprintf(stderr, " FOUND but NODATA");
+        }
 }
 
 /**
