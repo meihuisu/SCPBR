@@ -155,7 +155,7 @@ def main():
               d_val= -1.0 * (dep_list[dep_i]*1000) 
         f_old_i = f_old_i+1 
 
-    print("total rewrite count :",rewrite_cnt);
+    print("total rewrite count :",rewrite_cnt)
 
     f_new.close()
     f_old.close()
