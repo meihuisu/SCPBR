@@ -134,8 +134,8 @@ def main():
           if(surf_i == 0) : 
              print(dep_list[dep_i])
              print("  first one :",oline.strip())
-#         if no_need_val(d_val,s_val) :
-          if no_need(oline,dep_i) :
+          if no_need_val(d_val,s_val) :
+#          if no_need(oline,dep_i) :
             ## no change
             f_new.write(oline)
             no_rewrite_cnt=no_rewrite_cnt+1
