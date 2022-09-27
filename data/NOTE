@@ -18,4 +18,9 @@ make_data_files.py
    input  -> scpbr.data.txt
    output -> scpbr/vp.dat scpbr/vs.dat (binary files)
 
+-----  got data directly from Hao but need to rearrange -----
+
+rework_fang_data.py
+   input  -> Fang_19_new.csv
+   output -> SJFZ_Fangetal2019_VpandVs_clean.csv
 
