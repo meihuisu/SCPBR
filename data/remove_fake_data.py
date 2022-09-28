@@ -18,6 +18,14 @@
 ## above the topography should be removed. There will be some interpolation 
 ## problem, but with the resolution we have, it won't matter.
 #
+#
+# His inversion using a a regular box as grids, so there are grids above the 
+# free surface. Data at these grids are artificial (even if they have values 
+# differ from ’special value’), so I removed them all using the topo data 
+# (first figure below). Besides, layers with depth = -1,-0.5 are interpolated 
+# from depth=0 and depth=1.5km, so I also remove them if the data at depth=-1.5km 
+# is artificial.
+#
 
 import getopt
 import sys
