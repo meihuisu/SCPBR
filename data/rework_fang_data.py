@@ -5,9 +5,9 @@
 #  from Fang_19_new.csv
 #
 ## from Hao
-##I had a talk with Fang about the first layer. You are right, ’special value’ means no data. 
+##I had a talk with Fang about the first layer. You are right, "special value" means no data. 
 ##His inversion using a a regular box as grids, so there are grids above the free surface. 
-##Data at these grids are artificial (even if they have values differ from ’special value’), 
+##Data at these grids are artificial (even if they have values differ from "special value"), 
 ##so I removed them all using the topo data (first figure below). Besides, 
 ##layers with depth = -1,-0.5 are interpolated from depth=0 and depth=1.5km, so I also remove them
 ##if the data at depth=-1.5km is artificial.
