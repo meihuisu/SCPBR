@@ -21,7 +21,7 @@
 #
 # His inversion using a a regular box as grids, so there are grids above the 
 # free surface. Data at these grids are artificial (even if they have values 
-# differ from ’special value’), so I removed them all using the topo data 
+# differ from 'special value'), so I removed them all using the topo data 
 # (first figure below). Besides, layers with depth = -1,-0.5 are interpolated 
 # from depth=0 and depth=1.5km, so I also remove them if the data at depth=-1.5km 
 # is artificial.
@@ -44,11 +44,15 @@ def usage():
     print("\n./remove_fake_data.py\n\n")
     sys.exit(0)
 
+
 def no_need_val(d_val,s_val) :
+    ## add offset
+    nd_val = d_val + 1500
+    ns_val = -1 * s_val + 1500
     if(d_val < s_val) :
-      return 0
-    else:
       return 1
+    else:
+      return 0
 
 #-118.17,32.38,-1.50,5.50,3.14
 # to
@@ -63,7 +67,8 @@ def main():
 
 ## should be 94 x 73
     surf_list=[]
-    f_surf=open('FangModel/surfs','r')
+#    f_surf=open('FangModel/surfs','r')
+    f_surf=open('FangModel/ETOPO1.surfs','r')
     surfs=f_surf.readlines()
     for s in surfs:
         sur=float(s.strip())
@@ -86,12 +91,15 @@ def main():
     surf_i=0
     f_old_i=0;
 
+    total_rewrite_cnt = 0
     rewrite_cnt=0
     no_rewrite_cnt = 0
-    track_fake_1.5 = []  ## should have 6862 of these
+    double_rewrite_cnt = 0
+    track_fake_1point5 = []  ## should have 6862 of these
     
 
-    d_val= -1.0 * (dep_list[dep_i]*1000) 
+    d_val= -1 * (dep_list[dep_i]*1000)
+
     for oline in olds:
         ## copy header
         if(f_old_i == 0) : 
@@ -102,37 +110,45 @@ def main():
              print(dep_list[dep_i])
              print("  first one :",oline.strip())
           if no_need_val(d_val,s_val) :
-          if( (dep_i > 0) && (dep_i <= 2) ) :
-            if (track_fake_1.5[surf_i]==1) :
-              nline=rewrite_fake(oline)
-              f_new.write(nline)
-              rewrite_cnt=rewrite_cnt+1
-              continue 
-          if no_need_val(d_val,s_val) :
-            ## no change
-            f_new.write(oline)
-            if(dep_i == 0) :
-              track_fake_1.5.append(0);
-            no_rewrite_cnt=no_rewrite_cnt+1
+            if( (dep_i == 1) or (dep_i == 2) ) :
+              if (track_fake_1point5[surf_i]==1) :
+                nline=rewrite_fake(oline)
+                f_new.write(nline)
+                rewrite_cnt=rewrite_cnt+1
+                double_rewrite_cnt = double_rewrite_cnt +1
+              else: 
+                ## no change
+                f_new.write(oline)
+                no_rewrite_cnt=no_rewrite_cnt+1
+            else: 
+                ## no change
+                f_new.write(oline)
+                no_rewrite_cnt=no_rewrite_cnt+1
+                if(dep_i == 0) :
+                  track_fake_1point5.append(0);
           else:
             ## rewrite vp/vs to -9999.000
             nline=rewrite_fake(oline)
             if(dep_i == 0) :
-              track_fake_1.5.append(1);
+              track_fake_1point5.append(1);
             f_new.write(nline)
             rewrite_cnt=rewrite_cnt+1
           surf_i=surf_i+1
           if(surf_i >= dimension_x * dimension_y) :
             print("  last one :",oline.strip())
             print("  no_rewrite_cnt :",no_rewrite_cnt," at ", d_val)
+            print("  double_rewrite_cnt :",double_rewrite_cnt," at ", d_val)
+            total_rewrite_cnt = total_rewrite_cnt + rewrite_cnt
+            double_rewrite_cnt = 0;
+            rewrite_cnt=0
             no_rewrite_cnt=0
             surf_i=0;
             dep_i=dep_i+1
             if(dep_i < dimension_z) :
-              d_val= -1.0 * (dep_list[dep_i]*1000) 
+              d_val= -1 * (dep_list[dep_i]*1000) 
         f_old_i = f_old_i+1 
 
-    print("total rewrite count :",rewrite_cnt)
+    print("total rewrite count :",total_rewrite_cnt)
 
     f_new.close()
     f_old.close()
