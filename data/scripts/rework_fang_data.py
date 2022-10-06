@@ -12,6 +12,9 @@
 ##layers with depth = -1,-0.5 are interpolated from depth=0 and depth=1.5km, so I also remove them
 ##if the data at depth=-1.5km is artificial.
 ##ETOPO1 (Bedrock) from NOAA
+
+## Only valid values : -1.5km, 0km, and 1km
+## all other are interpolated when point > surface
 #
 
 import getopt

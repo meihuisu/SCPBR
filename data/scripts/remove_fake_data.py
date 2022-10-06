@@ -26,6 +26,10 @@
 # from depth=0 and depth=1.5km, so I also remove them if the data at depth=-1.5km 
 # is artificial.
 #
+#  TODO:  this is not done
+# also data at 500 is interpolated if -1.5km is fake
+# only real data is at -1.5k, 0 and 1.0k.
+#
 
 import getopt
 import sys
