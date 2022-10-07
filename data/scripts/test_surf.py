@@ -45,6 +45,9 @@ def main():
         surf_list.append(sur)
         if(sur >= 1500) :
            diff_list.append(sur-1500)
+           if(sur-1500 >= 500) :
+             print(surf_i,":  high high",sur);
+             print("     diff",sur-1500);
            a1500=a1500+1;
         elif(sur >= 1000) :
            diff_list.append(sur-1000)
@@ -56,7 +59,6 @@ def main():
            diff_list.append(sur-0)
            a0=a0+1;
         elif(sur <= -2000) :
-           print("low low",sur);
            diff_list.append(sur+2000)
            b2000 = b2000+1
         elif(sur <= -1500) :
@@ -76,21 +78,21 @@ def main():
             
 
     f_surf.close()
-    print("more than 1500",a1500)
-    print("more than 1000",a1000)
-    print("more than 500",a500)
-    print("more than 0",a0)
-    print("less than -2000",b2000)
-    print("less than -1500",b1500)
-    print("less than -1000",b1000)
-    print("less than -500",b500)
-    print("no change",nochange)
-    print("total",len(surf_list))
+    print("more than 1500>",a1500)
+    print("more than 1000>",a1000)
+    print("more than 500 >",a500)
+    print("more than 0   >",a0)
+    print("less than -2000 >",b2000)
+    print("less than -1500 >",b1500)
+    print("less than -1000 >",b1000)
+    print("less than -500 >",b500)
+    print("no change >",nochange)
+    print("total >",len(surf_list))
 
-    print("max surf", max(surf_list))
-    print("min surf", min(surf_list))
-    print("max surf diff", max(diff_list))
-    print("min surf diff", min(diff_list))
+    print("max surf>", max(surf_list))
+    print("min surf>", min(surf_list))
+    print("max surf diff>", max(diff_list))
+    print("min surf diff>", min(diff_list))
 
     print("\nDone!")
 

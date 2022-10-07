@@ -13,7 +13,7 @@ nx = 94
 ny = 73
 nz = 64
 
-# Depth, in meters (-1.5km to 30km)
+# Depth, in meters (0km to 31.5km)
 depth = 31500
 depth_interval =  500
 
