@@ -18,8 +18,8 @@ dimension_x =  94
 dimension_y =  73
 dimension_z =  64
 
-lon_origin = -118.38
-lat_origin = 32.8
+lon_origin = -118.17
+lat_origin = 32.38
 
 lon_upper = -115.38
 lat_upper = 34.54
@@ -66,6 +66,7 @@ def main():
        z_pos = int(t_depth/0.5)
 
        offset= z_pos * (dimension_y * dimension_x) + (y_pos * dimension_x) + x_pos
+       print( "X",x_pos,"Y",y_pos,"Z",z_pos)
 
        n_vp=t_vp * 1000
        n_vs=t_vs * 1000
