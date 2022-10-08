@@ -66,7 +66,7 @@ def main():
        z_pos = int(t_depth/0.5)
 
        offset= z_pos * (dimension_y * dimension_x) + (y_pos * dimension_x) + x_pos
-       print( "X",x_pos,"Y",y_pos,"Z",z_pos)
+#       print( "X",x_pos,"Y",y_pos,"Z",z_pos)
 
        n_vp=t_vp * 1000
        n_vs=t_vs * 1000
