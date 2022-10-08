@@ -18,6 +18,15 @@ dimension_x =  94
 dimension_y =  73
 dimension_z =  64
 
+lon_origin = -118.38
+lat_origin = 32.8
+
+lon_upper = -115.38
+lat_upper = 34.54
+
+delta_lon = (lon_upper - lon_origin )/(dimension_x-1)
+delta_lat = (lat_upper - lat_origin)/(dimension_y-1)
+
 def usage():
     print("\n./create_data_file.py\n\n")
     sys.exit(0)
@@ -46,16 +55,18 @@ def main():
           header=0
           continue
        arr = oline.split(',')
-       off_x=int(arr[0])
-       off_y=int(arr[1])
-       off_z=int(arr[2])
-       t_lon=float(arr[3])
-       t_lat=float(arr[4])
-       t_depth=float(arr[5])
-       t_vp=float(arr[6])
-       t_vs=float(arr[7])
+       t_lon=float(arr[0])
+       t_lat=float(arr[1])
+       t_depth=float(arr[2])
+       t_vp=float(arr[3])
+       t_vs=float(arr[4])
 
-       offset= off_z * (dimension_y * dimension_x) + (off_y * dimension_x) + off_x
+       y_pos = int(round((t_lat - lat_origin) / delta_lat))
+       x_pos = int(round((t_lon - lon_origin) / delta_lon))
+       z_pos = int(t_depth/0.5)
+
+       offset= z_pos * (dimension_y * dimension_x) + (y_pos * dimension_x) + x_pos
+
        n_vp=t_vp * 1000
        n_vs=t_vs * 1000
 

@@ -4,7 +4,6 @@
 #  create SJFZ_Fangetal2019_VpandVs_clean.csv
 #  from Fang_19_new.csv created by Hao
 #  eliminate entry that is NA and also entry that got shifted out 
-#  also add x,y,z location
 #
 
 import getopt
@@ -59,13 +58,10 @@ def main():
     valid_cnt=0
     shift_i=0
 
-    x_idx=0;
-    y_idx=0;
-    z_idx=0;
     for oline in olds:
         ## copy header
         if(header) : ## skip first line 
-          nline="x,y,z,longitude,latitude,depth,Vp,Vs\n"
+          nline="longitude,latitude,depth,Vp,Vs\n"
           f_new.write(nline)
           header=0
           continue
@@ -83,18 +79,10 @@ def main():
             newz=(oldz * 1000 + (500)* shift_list[shift_i])/1000
 
           if(newz >= 0 ):
-            nline=str(x_idx)+","+str(y_idx)+","+str(z_idx)+","+l[1]+","+l[0]+","+str(newz)+","+l[3]+","+l[4]
+            nline=l[1]+","+l[0]+","+str(newz)+","+l[3]+","+l[4]
             f_new.write(nline)
             valid_cnt=valid_cnt +1
         shift_i = shift_i + 1
-        x_idx=x_idx+1
-        if(x_idx == dimension_x) :
-          y_idx=y_idx+1
-          x_idx=0
-        if(y_idx == dimension_y) :
-          z_idx=z_idx+1
-          x_idx=0
-          y_idx=0
 
         if(shift_i == layer_count) :
           shift_i=0
