@@ -44,11 +44,17 @@ def main():
     for s in surfs:
         sur=float(s.strip())
         surf_list.append(sur)
-        dif=math.floor((sur-1500)/500);
+        t=(sur-1500)/500
+        if(t > 0):
+           dif=math.floor(t)
+        else:
+           dif=math.ceil(t)
         shift_list.append(dif)
         surf_i=surf_i+1
             
     f_surf.close()
+    print("max shift ",max(shift_list))
+    print("min shift ",min(shift_list))
 
 # shift, positive shift/shift down
 #        negative z/shift  up
