@@ -38,13 +38,13 @@ def main():
     shift_list=[]
     surf_list=[]
     surf_i=0
-    f_surf=open('FangModel/surfs','r')
-#    f_surf=open('FangModel/ETOPO1.surfs','r')
+#    f_surf=open('FangModel/surfs','r')
+    f_surf=open('FangModel/ETOPO1.surfs','r')
     surfs=f_surf.readlines()
     for s in surfs:
         sur=float(s.strip())
         surf_list.append(sur)
-        t=(sur-1500)/500
+        t=(sur-0)/500
         if(t > 0):
            dif=math.floor(t)
         else:
