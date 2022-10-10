@@ -4,6 +4,7 @@
 #  create SJFZ_Fangetal2019_VpandVs_clean.csv
 #  from Fang_19_new.csv created by Hao
 #  eliminate entry that is NA and also entry that got shifted out 
+#  beyond 31.5km
 #
 
 import getopt
@@ -44,11 +45,12 @@ def main():
     for s in surfs:
         sur=float(s.strip())
         surf_list.append(sur)
-        t=(sur-0)/500
-        if(t > 0):
-           dif=math.floor(t)
+        t=(sur)/500
+        if(t < 0) :
+          dif=math.floor(t)
         else:
-           dif=math.ceil(t)
+          dif=math.ceil(t)
+
         shift_list.append(dif)
         surf_i=surf_i+1
             
@@ -84,7 +86,7 @@ def main():
           else:
             newz=(oldz * 1000 + (500)* shift_list[shift_i])/1000
 
-          if(newz >= 0 ):
+          if(newz >= 0 and newz <= 31.5):
             nline=l[1]+","+l[0]+","+str(newz)+","+l[3]+","+l[4]
             f_new.write(nline)
             valid_cnt=valid_cnt +1
