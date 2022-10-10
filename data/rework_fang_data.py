@@ -32,11 +32,12 @@ def main():
     f_old=open('FangModel/Fang_19_new.csv','r')
     olds=f_old.readlines()
     f_new=open('FangModel/SJFZ_Fangetal2019_VpandVs_clean.csv','w')
+    f_bad=open('FangModel/SJFZ_Fangetal2019_VpandVs_bad.csv','w')
 
 
 ## get shift index    
 ## should be 94 x 73
-    shift_list=[]
+    shift_list=array.array('f', (-9999.0,) * (layer_count))
     surf_list=[]
     surf_i=0
 #    f_surf=open('FangModel/surfs','r')
@@ -50,8 +51,7 @@ def main():
           dif=math.ceil(t)
         else:
           dif=math.floor(t)
-
-        shift_list.append(dif)
+        shift_list[surf_i]=dif
         surf_i=surf_i+1
             
     f_surf.close()
@@ -86,6 +86,9 @@ def main():
           else:
             newz=(oldz * 1000 + (500)* shift_list[shift_i])/1000
 
+          if(newz < 0):
+            f_bad.write(oline)
+
           if(newz >= 0 and newz <= 31.5):
             nline=l[1]+","+l[0]+","+str(newz)+","+l[3]+","+l[4]
             f_new.write(nline)
@@ -97,6 +100,7 @@ def main():
   
     f_new.close()
     f_old.close()
+    f_bad.close()
 
     print("total valid write count :",valid_cnt)
     print("                 out of :",total_count)
