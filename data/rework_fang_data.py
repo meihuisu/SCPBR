@@ -47,9 +47,9 @@ def main():
         surf_list.append(sur)
         t=(sur)/500
         if(t < 0) :
-          dif=math.floor(t)
-        else:
           dif=math.ceil(t)
+        else:
+          dif=math.floor(t)
 
         shift_list.append(dif)
         surf_i=surf_i+1
