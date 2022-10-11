@@ -68,13 +68,13 @@ def main():
              newz = 0.0
           else:
              newz = oldz - shift_arr[shift_i]
-             if(newz >= 0 and newz <= 31.5):
-               nline=l[1]+","+l[0]+","+str(newz)+","+l[3]+","+l[4]
-               f_new.write(nline)
-               valid_cnt=valid_cnt +1
-             else:
-               f_bad.write(oline)
-               bad_cnt=bad_cnt+1
+          if(newz >= 0 and newz <= 31.5):
+             nline=l[1]+","+l[0]+","+str(newz)+","+l[3]+","+l[4]
+             f_new.write(nline)
+             valid_cnt=valid_cnt +1
+           else:
+             f_bad.write(oline)
+             bad_cnt=bad_cnt+1
         shift_i = shift_i + 1
         if(shift_i >= layer_count):
            shift_i=0
