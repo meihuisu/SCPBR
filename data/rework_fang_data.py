@@ -72,7 +72,7 @@ def main():
              nline=l[1]+","+l[0]+","+str(newz)+","+l[3]+","+l[4]
              f_new.write(nline)
              valid_cnt=valid_cnt +1
-           else:
+          else:
              f_bad.write(oline)
              bad_cnt=bad_cnt+1
         shift_i = shift_i + 1
