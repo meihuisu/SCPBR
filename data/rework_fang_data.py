@@ -37,24 +37,28 @@ def main():
 
 ## get shift index    
 ## should be 94 x 73
-    shift_list=array.array('f', (-9999.0,) * (layer_count))
+    shift_list=array.array('f', (0.0,) * (layer_count))
     surf_list=[]
     surf_i=0
 #    f_surf=open('FangModel/surfs','r')
-    f_surf=open('FangModel/ETOPO1.surfs','r')
-    surfs=f_surf.readlines()
+    f_surfs=open('FangModel/ETOPO1.surfs','r')
+    surfs=f_surfs.readlines()
+    f_surfs.close()
+
     for s in surfs:
-        sur=float(s.strip())
-        surf_list.append(sur)
-        t=(sur)/500
-        if(t < 0) :
+        surf=float(s.strip())
+        surf_list.append(surf)
+        t=(surf)/500
+        if(t < 0) : 
+## need to shift up
           dif=math.ceil(t)
+          shift_list[surf_i]=dif
         else:
           dif=math.floor(t)
-        shift_list[surf_i]=dif
+## shift up ? NOT SURE
+          shift_list[surf_i]=dif
         surf_i=surf_i+1
             
-    f_surf.close()
     print("max shift ",max(shift_list))
     print("min shift ",min(shift_list))
 
@@ -87,6 +91,8 @@ def main():
             newz=(oldz * 1000 + (500)* shift_list[shift_i])/1000
 
           if(newz < 0):
+            print("bad shift..", shift_list[shift_i])
+            print("    z..", newz)
             f_bad.write(oline)
 
           if(newz >= 0 and newz <= 31.5):
