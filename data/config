@@ -32,10 +32,3 @@ top_left_corner_lat	= 34.54
 
 ## bilinear or trilinear interpolation
 interpolation = off 
-
-
-####
-#1) convert SJFZ_Fangetal2016_VpandVs.csv 
-#     to fang_inp/Vp.dat and fang_inp/Vs.dat
-#2) use that to create scpbr.dat.txt 
-#3) then, make scpbr/vp.dat and scpbr/vs.dat for ucvm
