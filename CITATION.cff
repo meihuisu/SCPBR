@@ -1,0 +1,65 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "SCEC SCEC"
+  given-names: ""
+keywords: UCVM, research
+license: BSD-3-Clause
+repository-code: "https://github.com/SCECcode/scpbr.git"
+title: "Southern California Plate Boundary Region(scpbr)"
+version: 3.0
+type: software
+date-released: 2022-10-31
+repository-code: "https://github.com/SCECcode/scpbr.git"
+contact:
+  - email: software@scec.org
+    name: "The SCEC Software project scpbr"
+references:
+  - authors:
+      - family-names: "Fang"
+        given-names: "Hongjian"
+      - family-names: "Yao"
+        given-names: "Huajian"
+      - family-names: "Zhang"
+        given-names: "Haijiang"
+      - family-names: "Thurber"
+        given-names: "Clifford"
+      - family-names: "Ben-Zion"
+        given-names: "Yehuda"
+      - family-names: "van der Hilst"
+        given-names: "Robert D."
+    keywords: joint inversion, body waves, seismic tomography, surface waves and free oscillations
+    scope: "Cite this paper if you want to reference the model"
+    title: "Vp/Vs tomography in the southern California plate boundary region using body and surface wave traveltime data"
+    journal: "Geophysical Journal International"
+    year: 2018
+    volume: 216
+    start: 609
+    end: 620
+    doi: 10.1093/gji/ggy458.2019
+  - authors:
+      - family-names: "Fang"
+        given-names: "Hongjian"
+      - family-names: "Zhang"
+        given-names: "Haijiang"
+      - family-names: "Yao"
+        given-names: "Huajian"
+      - family-names: "Fang"
+        given-names: "Hongjian"
+      - family-names: "Allam"
+        given-names: "Amir"
+      - family-names: "Zigone"
+        given-names: "Dimitri"
+      - family-names: "Ben-Zion"
+        given-names: "Yehuda"
+      - family-names: "Thurber"
+        given-names: "Clifford"
+      - family-names: "van der Hilst"
+        given-names: "Robert D"
+    keywords: 
+    title: "A new algorithm for three-dimensional joint inversion of body wave and surface wave data and its application to the Southern California plate boundary region"
+    year: 2016
+    volume: 121
+    start: 3557
+    end: 3569
+    doi: 10.1002/2015JB012702
