@@ -34,6 +34,8 @@ int main(int argc, const char* argv[]) {
 
 	printf("Loaded the model successfully.\n");
 
+// surf: 284.191, vs30:580.043 vp:5350 vs:2990 density:2591.617
+
 	// Query a point.
 	pt.longitude = -118;
 	pt.latitude = 34;
