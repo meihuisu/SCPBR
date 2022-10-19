@@ -1,3 +1,3 @@
 # GNU Automake config
-SUBDIRS = data src tests
-INCLUDES = $(default_includes)
+SUBDIRS = data src test
+AM_CPPFLAGS = $(default_includes)

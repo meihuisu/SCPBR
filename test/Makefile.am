@@ -21,8 +21,7 @@ all: $(bin_PROGRAMS)
 # Executables
 ############################################
 
-unittest: unittest.o unittest_defs.o test_helper.o \
-	test_scpbr_exec.o
+unittest: unittest.o unittest_defs.o test_helper.o test_scpbr_exec.o
 	$(CC) -o $@ $^ $(AM_LDFLAGS)
 
 run_unit : unittest
@@ -33,7 +32,6 @@ accepttest: accepttest.o unittest_defs.o test_helper.o test_grid_exec.o
 
 run_accept: accepttest
 	./run_accept
-
 
 clean:
 	rm -rf *~ *.o *.out $(bin_PROGRAMS) 
