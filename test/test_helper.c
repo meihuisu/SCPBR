@@ -12,7 +12,7 @@
 #include "test_helper.h"
 
 int debug_mode=0;
-scpbr_surf_t test_surfs[100];
+surf_t test_surfs[100];
 int test_surfs_cnt=0;
 
 double init_preset_ucvm_surface(scpbr_surf_t *surfs) {
