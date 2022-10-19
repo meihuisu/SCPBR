@@ -37,8 +37,10 @@ int scpbr_init(const char *dir, const char *label) {
   scpbr_configuration = calloc(1, sizeof(scpbr_configuration_t));
   scpbr_velocity_model = calloc(1, sizeof(scpbr_model_t));
 
+XXX
   // Configuration file location.
   sprintf(configbuf, "%s/model/%s/data/config", dir, label);
+  fprintf(stderr,"%s\n", configbuf);
 
   // Read the configuration file.
   if (scpbr_read_configuration(configbuf, scpbr_configuration) != SUCCESS) {
