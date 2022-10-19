@@ -12,17 +12,17 @@
 #include "test_helper.h"
 
 int debug_mode=0;
-%%cvmhbn%_surf_t test_surfs[100];
+scpbr_surf_t test_surfs[100];
 int test_surfs_cnt=0;
 
-double init_preset_ucvm_surface(%%cvmhbn%_surf_t *surfs) {
+double init_preset_ucvm_surface(scpbr_surf_t *surfs) {
   char fname[100];
   char line[100];
   char key[50];
   char value[50];
   FILE *fp;
 
-  strcpy(fname,"./inputs/%%cvmhbn%_ucvm_surf.dat");
+  strcpy(fname,"./inputs/scpbr_ucvm_surf.dat");
   fp = fopen(fname, "r");
   if (fp == NULL) { return(1); }
 
@@ -49,7 +49,7 @@ double get_preset_ucvm_surface(double y, double x) {
 }
 
 // get model specific test points and expected values
-int get_depth_test_point(%%cvmhbn%_point_t *pt, %%cvmhbn%_properties_t *expect) {
+int get_depth_test_point(scpbr_point_t *pt, scpbr_properties_t *expect) {
 
   char fname[100];
   char line[100];
@@ -57,7 +57,7 @@ int get_depth_test_point(%%cvmhbn%_point_t *pt, %%cvmhbn%_properties_t *expect) 
   char value[50];
   FILE *fp;
 
-  strcpy(fname,"./inputs/%%cvmhbn%_depth_test_point.dat");
+  strcpy(fname,"./inputs/scpbr_depth_test_point.dat");
   fp = fopen(fname, "r");
   if (fp == NULL) { return(1); }
 
@@ -97,7 +97,7 @@ int get_depth_test_point(%%cvmhbn%_point_t *pt, %%cvmhbn%_properties_t *expect) 
 }
 
 // get model specific test points and expected values
-int get_elev_test_point(%%cvmhbn%_point_t *pt, %%cvmhbn%_properties_t *expect, double *pt_elevation, double *pt_surf) {
+int get_elev_test_point(scpbr_point_t *pt, scpbr_properties_t *expect, double *pt_elevation, double *pt_surf) {
 
   char fname[100];
   char line[100];
@@ -105,7 +105,7 @@ int get_elev_test_point(%%cvmhbn%_point_t *pt, %%cvmhbn%_properties_t *expect, d
   char value[50];
   FILE *fp;
 
-  strcpy(fname,"./inputs/%%cvmhbn%_elev_test_point.dat");
+  strcpy(fname,"./inputs/scpbr_elev_test_point.dat");
   fp = fopen(fname, "r");
   if (fp == NULL) { return(1); }
 
@@ -151,21 +151,21 @@ int get_elev_test_point(%%cvmhbn%_point_t *pt, %%cvmhbn%_properties_t *expect, d
 
 
 /*************************************************************************/
-int run%%CVMHBN%(const char *bindir, const char *cvmdir, 
+int runSCPBR(const char *bindir, const char *cvmdir, 
 	  const char *infile, const char *outfile, int mode)
 {
-  %%cvmhbn%_point_t pt;
-  %%cvmhbn%_properties_t ret;
+  scpbr_point_t pt;
+  scpbr_properties_t ret;
 
   FILE *infp, *outfp;
   char line[1000];
 
   char *envstr=getenv("UCVM_INSTALL_PATH");
   if(envstr != NULL) {
-    if (test_assert_int(model_init(envstr, "%%cvmhbn%"), 0) != 0) {
+    if (test_assert_int(model_init(envstr, "scpbr"), 0) != 0) {
       return(1);
     }
-  } else if (test_assert_int(model_init("..", "%%cvmhbn%"), 0) != 0) {
+  } else if (test_assert_int(model_init("..", "scpbr"), 0) != 0) {
     return(1);
   }
 
@@ -212,130 +212,6 @@ int run%%CVMHBN%(const char *bindir, const char *cvmdir,
                 
   if (test_assert_int(model_finalize(),0) != 0) {
       return(1);
-  }
-
-  return(0);
-}
-
-int runVX%%CVMHBN%(const char *bindir, const char *cvmdir, 
-	  const char *infile, const char *outfile, int mode)
-{
-  char currentdir[1280];
-  char runpath[1280];
-  char flags[1280]="";
-
-  sprintf(runpath, "%s/run_vx_%%cvmhbn%.sh", bindir);
-
-  switch (mode) {
-    case MODE_ELEVATION:
-      sprintf(flags, "-z elev ");
-      break;
-    case MODE_DEPTH:
-      sprintf(flags, "-z dep ");
-      break;
-  }
-
-  if(debug_mode) { strcat(flags, "-g "); }
-
-  /* Save current directory */
-  getcwd(currentdir, 1280);
-  
-  /* Fork process */
-  pid_t pid;
-  pid = fork();
-  if (pid == -1) {
-    perror("fork");
-    return(1);
-  } else if (pid == 0) {
-    /* Change dir to cvmdir */
-    if (chdir(bindir) != 0) {
-      printf("FAIL: Error changing dir in run_vx_%%cvmhbn%.sh\n");
-      return(1);
-    }
-
-    if (strlen(flags) == 0) {
-      execl(runpath, runpath, infile, outfile, (char *)0);
-    } else {
-      execl(runpath, runpath, flags, infile, outfile, (char *)0);
-    }
-
-    perror("execl"); /* shall never get to here */
-    printf("FAIL: CVM exited abnormally\n");
-    return(1);
-  } else {
-    int status;
-    waitpid(pid, &status, 0);
-    if (WIFEXITED(status)) {
-      return(0);
-    } else {
-      printf("FAIL: CVM exited abnormally\n");
-      return(1);
-    }
-  }
-
-  return(0);
-}
-
-
-int runVXLite%%CVMHBN%(const char *bindir, const char *cvmdir, 
-	      const char *infile, const char *outfile,
-	      int mode)
-{
-  char currentdir[1280];
-  char flags[1280]="";
-
-  char runpath[1280];
-
-  sprintf(runpath, "./run_vx_lite_%%cvmhbn%.sh");
-
-  sprintf(flags, "-m %s ", cvmdir);
-
-  switch (mode) {
-     case MODE_ELEVATION:
-       strcat(flags, "-z elev ");
-       break;
-     case MODE_DEPTH:
-       strcat(flags, "-z dep ");
-       break;
-  }
-
-  if(debug_mode) { strcat(flags, "-g "); }
-
-  /* Save current directory */
-  getcwd(currentdir, 1280);
-  
-  /* Fork process */
-  pid_t pid;
-  pid = fork();
-  if (pid == -1) {
-    perror("fork");
-    printf("FAIL: unable to fork\n");
-    return(1);
-  } else if (pid == 0) {
-
-    /* Change dir to bindir */
-    if (chdir(bindir) != 0) {
-      printf("FAIL: Error changing dir in run_vx_lite_%%cvmhbn%.sh\n");
-      return(1);
-    }
-
-    if (strlen(flags) == 0) {
-      execl(runpath, runpath, infile, outfile, (char *)0);
-    } else {
-      execl(runpath, runpath, flags, infile, outfile, (char *)0);
-    }
-    perror("execl"); /* shall never get to here */
-    printf("FAIL: CVM exited abnormally\n");
-    return(1);
-  } else {
-    int status;
-    waitpid(pid, &status, 0);
-    if (WIFEXITED(status)) {
-      return(0);
-    } else {
-      printf("FAIL: CVM exited abnormally\n");
-      return(1);
-    }
   }
 
   return(0);
