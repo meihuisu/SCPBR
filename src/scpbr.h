@@ -20,19 +20,6 @@
 
 #include "ucvm_model_dtypes.h"
 
-// Constants
-#ifndef M_PI
-  /** Defines pi */
-  #define M_PI 3.14159265358979323846
-#endif
-
-/** Defines a return value of success */
-#define SUCCESS 0
-/** Defines a return value of failure */
-#define FAIL 1
-/** Defines a return value of NA from model */
-#define NA -1 
-
 /* config string */
 #define SCPBR_CONFIG_MAX 1000
 
@@ -98,16 +85,23 @@ typedef struct scpbr_configuration_t {
 
 } scpbr_configuration_t;
 
+## define data status
+typedef enum { SCPBR_DATA_NA = 0,
+               SCPBR_DATA_FILE = 1,
+               SCPBR_DATA_MEMORY = 2 } scpbr_data_t;
+#define SCPBR_DATA_FAIL 1
+#define SCPBR_DATA_USABLE 0
+#define SCPBR_DATA_SUCCESS 2
 /** The model structure which points to available portions of the model. */
 typedef struct scpbr_model_t {
   /** A pointer to the Vp data either in memory or disk. Null if does not exist. */
   void *vp;
   /** Vp status: 0 = not found, 1 = found and not in memory, 2 = found and in memory */
-  int vp_status;
+  scpbr_data_t vp_status;
   /** A pointer to the Vs data either in memory or disk. Null if does not exist. */
   void *vs;
   /** Vs status: 0 = not found, 1 = found and not in memory, 2 = found and in memory */
-  int vs_status;
+  scpbr_data_t vs_status;
 } scpbr_model_t;
 
 // Constants

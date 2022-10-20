@@ -26,7 +26,6 @@ int scpbr_config_sz=0;
  * @return Success or failure, if initialization was successful.
  */
 int scpbr_init(const char *dir, const char *label) {
-  int tempVal = 0;
   char configbuf[512];
 
   scpbr_config_string = calloc(SCPBR_CONFIG_MAX, sizeof(char));
@@ -44,21 +43,22 @@ int scpbr_init(const char *dir, const char *label) {
   // Read the configuration file.
   if (scpbr_read_configuration(configbuf, scpbr_configuration) != SUCCESS) {
     print_error("No configuration file was found to read from.");
-    return FAIL;
+    return UCVM_CODE_ERROR;
   }
 
   // Set up the data directory.
   sprintf(scpbr_data_directory, "%s/model/%s/data/%s", dir, label, scpbr_configuration->model_dir);
 
   // Can we allocate the model, or parts of it, to memory. If so, we do.
-  tempVal = scpbr_try_reading_model(scpbr_velocity_model);
+  int rval = scpbr_try_reading_model(scpbr_velocity_model);
 
-  if (tempVal == SUCCESS) {
+  if (rval == SCPBR_DATA_FAIL) {
+    print_error("No model file was found to read from.");
+    return UCVM_CODE_ERROR;
+  }
+  if( rval != SPBR_DATA_SUCCESS) { // not all is read inmemory 
     fprintf(stderr, "WARNING: Could not load model into memory. Reading the model from the\n");
     fprintf(stderr, "hard disk may result in slow performance.");
-  } else if (tempVal == FAIL) {
-    print_error("No model file was found to read from.");
-    return FAIL;
   }
 
   // In order to simplify our calculations in the query, we want to rotate the box so that the bottom-left
@@ -78,7 +78,7 @@ int scpbr_init(const char *dir, const char *label) {
   // Let everyone know that we are initialized and ready for business.
   scpbr_is_initialized = 1;
 
-  return SUCCESS;
+  return UCVM_CODE_SUCCESS;
 }
 
 /**
@@ -169,7 +169,7 @@ delta_lat;
 // XXX         data[i].vs = scpbr_calculate_vs(data[i].vp);
   }
 
-  return SUCCESS;
+  return UCVM_CODE_SUCCESS;
 }
 
 /**
@@ -302,7 +302,7 @@ int scpbr_finalize() {
 
   free(scpbr_configuration);
 
-  return SUCCESS;
+  return UCVM_CODE_SUCCESS;
 }
 
 /**
@@ -337,9 +337,9 @@ int scpbr_config(char **config, int *sz)
   if(len > 0) {
     *config=scpbr_config_string;
     *sz=scpbr_config_sz;
-    return SUCCESS;
+    return UCVM_CODE_SUCCESS;
   }
-  return FAIL;
+  return UCVM_CODE_ERROR;
 }
 
 /**
@@ -360,7 +360,7 @@ int scpbr_read_configuration(char *file, scpbr_configuration_t *config) {
   // If our file pointer is null, an error has occurred. Return fail.
   if (fp == NULL) {
     print_error("Could not open the configuration file.");
-    return FAIL;
+    return UCVM_CODE_ERROR;
   }
 
   // Read the lines in the configuration file.
@@ -416,12 +416,12 @@ int scpbr_read_configuration(char *file, scpbr_configuration_t *config) {
     config->bottom_right_corner_lon == 0 || config->bottom_right_corner_lat == 0 || config->depth == 0 ||
     config->depth_interval == 0) {
     print_error("One configuration parameter not specified. Please check your configuration file.");
-    return FAIL;
+    return UCVM_CODE_ERROR;
   }
 
   fclose(fp);
 
-  return SUCCESS;
+  return UCVM_CODE_SUCCESS;
 }
 
 /**
@@ -492,8 +492,9 @@ void print_error(char *err) {
  * Tries to read the model into memory.
  *
  * @param model The model parameter struct which will hold the pointers to the data either on disk or in memory.
- * @return 2 if all files are read to memory, 0/SUCCESS if file is found but at least 1
- * is not in memory, 1/FAIL if no file found.
+ * @return 2 if all files are read to memory,
+ *         0 if file is found but at least 1 is not in memory, 
+ *         1 if no file found.
  */
 int scpbr_try_reading_model(scpbr_model_t *model) {
   double base_malloc = scpbr_configuration->nx * scpbr_configuration->ny * scpbr_configuration->nz * sizeof(float);
@@ -511,11 +512,11 @@ int scpbr_try_reading_model(scpbr_model_t *model) {
       fp = fopen(current_file, "rb");
       fread(model->vp, 1, base_malloc, fp);
       fclose(fp);
-      model->vp_status = 2;
+      model->vp_status = SCPBR_DATA_MEMORY;
     } else {
       all_read_to_memory = 0;
       model->vp = fopen(current_file, "rb");
-      model->vp_status = 1;
+      model->vp_status = SCPBR_DATA_FILE;
     }
     file_count++;
   }
@@ -528,21 +529,22 @@ int scpbr_try_reading_model(scpbr_model_t *model) {
       fp = fopen(current_file, "rb");
       fread(model->vs, 1, base_malloc, fp);
       fclose(fp);
-      model->vs_status = 2;
+      model->vs_status = SCPBR_DATA_MEMORY;
     } else {
       all_read_to_memory = 0;
       model->vs = fopen(current_file, "rb");
-      model->vs_status = 1;
+      model->vs_status = SCPBR_DATA_FILE;
     }
     file_count++;
   }
 
-  if (file_count == 0)
-    return FAIL;
-        else if (all_read_to_memory == 0)
-                return SUCCESS;
-        else
-                return 2;
+  if (file_count == 0) {
+    return SCPBR_DATA_FAIL;
+  }
+  if (all_read_to_memory == 0) {
+    return SCPBR_DATA_USABLE;
+  }
+  return SCPBR_DATA_SUCCESS;
 }
 
 // The following functions are for dynamic library mode. If we are compiling
