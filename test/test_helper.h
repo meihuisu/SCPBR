@@ -1,7 +1,6 @@
 #ifndef TEST_HELPER_H
 #define TEST_HELPER_H
 
-#include "ucvm_model_dtypes.h"
 #include "scpbr.h"
 
 /* Constants */
@@ -12,11 +11,6 @@
 #define MODE_NONE 0
 #define MODE_ELEVATION 2
 #define MODE_DEPTH 4
-
-/* Test data sets */
-typedef enum { VX_TEST_DATASET_NOBKG = 0, 
-	       VX_TEST_DATASET_BKG, 
-	       VX_TEST_DATASET_NOGTL } vx_test_dataset_t;
 
 typedef struct scpbr_surf_t {
         /** Longitude member of the point */
@@ -37,14 +31,9 @@ double get_preset_ucvm_surface(double, double);
 
 /* Retrieve basic test points */
 int get_depth_test_point(scpbr_point_t *pt, scpbr_properties_t *expect);
-int get_elev_test_point(scpbr_point_t *pt, scpbr_properties_t *expect,
-                        double *pt_elevation, double *pt_surf);
 
 /* Retrieve expected surface elev at the test points */
 int get_surf_values(double *surf_values);
-
-/* Retrieve expected mat props at the test points */
-int get_mat_props(float *vp, float *vs, double *rho, vx_test_dataset_t ds);
 
 /* run with model api */
 int runSCPBR(const char *bindir, const char *cvmdir, 

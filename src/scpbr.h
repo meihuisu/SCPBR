@@ -85,7 +85,7 @@ typedef struct scpbr_configuration_t {
 
 } scpbr_configuration_t;
 
-## define data status
+// define data status
 typedef enum { SCPBR_DATA_NA = 0,
                SCPBR_DATA_FILE = 1,
                SCPBR_DATA_MEMORY = 2 } scpbr_data_t;
@@ -106,24 +106,24 @@ typedef struct scpbr_model_t {
 
 // Constants
 /** The version of the model. */
-const char *scpbr_version_string = "SCPBR";
+extern const char *scpbr_version_string;
 
 // Variables
 /** Set to 1 when the model is ready for query. */
-int scpbr_is_initialized = 0;
+extern int scpbr_is_initialized;
 
 /** Location of the binary data files. */
-char scpbr_data_directory[128];
+extern char scpbr_data_directory[128];
 
 /** Configuration parameters. */
-scpbr_configuration_t *scpbr_configuration;
+extern scpbr_configuration_t *scpbr_configuration;
 /** Holds pointers to the velocity model data OR indicates it can be read from file. */
-scpbr_model_t *scpbr_velocity_model;
+extern scpbr_model_t *scpbr_velocity_model;
 
 /** The height of this model's region, in meters. */
-double scpbr_total_height_m = 0;
+extern double scpbr_total_height_m;
 /** The width of this model's region, in meters. */
-double scpbr_total_width_m = 0;
+extern double scpbr_total_width_m;
 
 // UCVM API Required Functions
 
@@ -172,3 +172,5 @@ void scpbr_bilinear_interpolation(double x_percent, double y_percent, scpbr_prop
 /** Trilinearly interpolates the properties. */
 void scpbr_trilinear_interpolation(double x_percent, double y_percent, double z_percent, scpbr_properties_t *eight_points,
                scpbr_properties_t *ret_properties);
+
+#endif

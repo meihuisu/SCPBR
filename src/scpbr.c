@@ -12,6 +12,27 @@
 
 #include "scpbr.h"
 
+/************ Constants and Variables ********/
+/** The version of the model. */
+const char *scpbr_version_string = "SCPBR";
+
+// Variables
+/** Set to 1 when the model is ready for query. */
+int scpbr_is_initialized = 0;
+
+/** Location of the binary data files. */
+char scpbr_data_directory[128];
+
+/** Configuration parameters. */
+scpbr_configuration_t *scpbr_configuration;
+/** Holds pointers to the velocity model data OR indicates it can be read from file. */
+scpbr_model_t *scpbr_velocity_model;
+
+/** The height of this model's region, in meters. */
+double scpbr_total_height_m = 0;
+/** The width of this model's region, in meters. */
+double scpbr_total_width_m = 0;
+
 /** The config of the model */
 char *scpbr_config_string=NULL;
 int scpbr_config_sz=0;
@@ -41,7 +62,7 @@ int scpbr_init(const char *dir, const char *label) {
   fprintf(stderr,"%s\n", configbuf);
 
   // Read the configuration file.
-  if (scpbr_read_configuration(configbuf, scpbr_configuration) != SUCCESS) {
+  if (scpbr_read_configuration(configbuf, scpbr_configuration) != UCVM_CODE_SUCCESS) {
     print_error("No configuration file was found to read from.");
     return UCVM_CODE_ERROR;
   }
@@ -56,7 +77,7 @@ int scpbr_init(const char *dir, const char *label) {
     print_error("No model file was found to read from.");
     return UCVM_CODE_ERROR;
   }
-  if( rval != SPBR_DATA_SUCCESS) { // not all is read inmemory 
+  if( rval != SCPBR_DATA_SUCCESS) { // not all is read inmemory 
     fprintf(stderr, "WARNING: Could not load model into memory. Reading the model from the\n");
     fprintf(stderr, "hard disk may result in slow performance.");
   }

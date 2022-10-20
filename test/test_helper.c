@@ -12,14 +12,12 @@
 #include "test_helper.h"
 
 int debug_mode=0;
-surf_t test_surfs[100];
+scpbr_surf_t test_surfs[100];
 int test_surfs_cnt=0;
 
 double init_preset_ucvm_surface(scpbr_surf_t *surfs) {
   char fname[100];
   char line[100];
-  char key[50];
-  char value[50];
   FILE *fp;
 
   strcpy(fname,"./inputs/scpbr_ucvm_surf.dat");
@@ -96,60 +94,6 @@ int get_depth_test_point(scpbr_point_t *pt, scpbr_properties_t *expect) {
   return 0;
 }
 
-// get model specific test points and expected values
-int get_elev_test_point(scpbr_point_t *pt, scpbr_properties_t *expect, double *pt_elevation, double *pt_surf) {
-
-  char fname[100];
-  char line[100];
-  char key[50];
-  char value[50];
-  FILE *fp;
-
-  strcpy(fname,"./inputs/scpbr_elev_test_point.dat");
-  fp = fopen(fname, "r");
-  if (fp == NULL) { return(1); }
-
-  // process one line at a time
-  while (fgets(line, sizeof(line), fp) != NULL) {
-    if (line[0] != '#' && line[0] != ' ' && line[0] != '\n') {
-       sscanf(line, "%s = %s", key, value);
-
-       // Which variable are we editing?
-       if (strcmp(key, "longitude") == 0) {
-         pt->longitude = atof(value);
-         continue;
-       }
-       if (strcmp(key, "latitude") == 0) {
-         pt->latitude = atof(value);
-         continue;
-       }
-       if (strcmp(key, "pt_elevation") == 0) {
-         *pt_elevation = atof(value);
-         continue;
-       }
-       if (strcmp(key, "pt_surf") == 0) {
-         *pt_surf = atof(value);
-         continue;
-       }
-       if (strcmp(key, "vs") == 0) {
-         expect->vs = atof(value);
-         continue;
-       }
-       if (strcmp(key, "vp") == 0) {
-         expect->vp = atof(value);
-         continue;
-       }
-       if (strcmp(key, "rho") == 0) {
-         expect->rho = atof(value);
-         continue;
-       }
-    }
-  }
-
-  return 0;
-}
-
-
 /*************************************************************************/
 int runSCPBR(const char *bindir, const char *cvmdir, 
 	  const char *infile, const char *outfile, int mode)
@@ -179,10 +123,6 @@ int runSCPBR(const char *bindir, const char *cvmdir,
       break;
     case MODE_NONE:
       break; // default
-  }
-
-  if (test_assert_int(model_setparam(0, UCVM_PARAM_QUERY_MODE, zmode), 0) != 0) {
-      return(1);
   }
 
   /* open infile, outfile */
