@@ -492,8 +492,8 @@ void print_error(char *err) {
  * Tries to read the model into memory.
  *
  * @param model The model parameter struct which will hold the pointers to the data either on disk or in memory.
- * @return 2 if all files are read to memory, SUCCESS if file is found but at least 1
- * is not in memory, FAIL if no file found.
+ * @return 2 if all files are read to memory, 0/SUCCESS if file is found but at least 1
+ * is not in memory, 1/FAIL if no file found.
  */
 int scpbr_try_reading_model(scpbr_model_t *model) {
   double base_malloc = scpbr_configuration->nx * scpbr_configuration->ny * scpbr_configuration->nz * sizeof(float);

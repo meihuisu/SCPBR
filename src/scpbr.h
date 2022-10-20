@@ -1,3 +1,6 @@
+#ifndef SCPBR_H
+#define SCPBR_H
+
 /**
  * @file scpbr.h
  * @brief Main header file for SCPBR library.
@@ -14,6 +17,8 @@
 #include <string.h>
 #include <unistd.h>
 #include <math.h>
+
+#include "ucvm_model_dtypes.h"
 
 // Constants
 #ifndef M_PI
