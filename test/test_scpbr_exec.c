@@ -99,18 +99,9 @@ int test_query_points_by_depth()
   /* Save current directory */
   getcwd(currentdir, 1000);
 
-  sprintf(infile, "%s/%s", currentdir, "./inputs/test-depth-ucvm.in");
-  sprintf(outfile, "%s/%s", currentdir, "test-depth-ucvm.out");
-
-/*** seems to differ in result from mac and linux ***/
-/*** DOES NOT NEED anymore??? 
-  #ifdef __APPLE__
-    sprintf(reffile, "%s/%s", currentdir, "./ref/test-depth-ucvm_mac.ref");
-  #else
-    sprintf(reffile, "%s/%s", currentdir, "./ref/test-depth-ucvm.ref");
-  #endif
-***/
-  sprintf(reffile, "%s/%s", currentdir, "./ref/test-depth-ucvm.ref");
+  sprintf(infile, "%s/%s", currentdir, "./inputs/test-depth.in");
+  sprintf(outfile, "%s/%s", currentdir, "test-depth.out");
+  sprintf(reffile, "%s/%s", currentdir, "./ref/test-depth.ref");
 
   if (test_assert_file_exist(infile) != 0) {
     return _failure("filed not found");

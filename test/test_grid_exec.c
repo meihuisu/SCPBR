@@ -27,9 +27,9 @@ int test_scpbr_grid_depth()
   /* Save current directory */
   getcwd(currentdir, 1000);
 
-  sprintf(infile, "%s/%s", currentdir, "./inputs/test-grid-depth.in");
-  sprintf(outfile, "%s/%s", currentdir, "test-grid-scpbr-depth.out");
-  sprintf(reffile, "%s/%s", currentdir, "./ref/test-grid-scpbr-depth.ref");
+  sprintf(infile, "%s/%s", currentdir, "./inputs/test-grid.in");
+  sprintf(outfile, "%s/%s", currentdir, "test-grid.out");
+  sprintf(reffile, "%s/%s", currentdir, "./ref/test-grid.ref");
 
   if (test_assert_int(runSCPBR(BIN_DIR, MODEL_DIR,infile, outfile,
 				MODE_DEPTH), 0) != 0) {

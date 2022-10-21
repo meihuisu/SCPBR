@@ -59,7 +59,6 @@ int scpbr_init(const char *dir, const char *label) {
 
   // Configuration file location.
   sprintf(configbuf, "%s/model/%s/data/config", dir, label);
-  fprintf(stderr,"%s\n", configbuf);
 
   // Read the configuration file.
   if (scpbr_read_configuration(configbuf, scpbr_configuration) != UCVM_CODE_SUCCESS) {
