@@ -36,7 +36,6 @@ jobs:
          initiating-repo: 'scpbr'
          target-model: 'scpbr'
     - name: Start SSH via Ngrok to check UCVM
-      if: ${{ success() }}
       uses: luchihoratiu/debug-via-ssh@main
       with:
             NGROK_AUTH_TOKEN: ${{ secrets.NGROK_TOKEN }}
