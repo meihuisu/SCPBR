@@ -4,7 +4,7 @@
 AM_CFLAGS = ${CFLAGS}
 AM_LDFLAGS = ${LDFLAGS}
 
-TARGETS = libscpbr.a libscpbr.so
+TARGETS = libsjfz.a libsjfz.so
 
 all: $(TARGETS)
 
@@ -12,20 +12,20 @@ install:
 	mkdir -p ${prefix}
 	mkdir -p ${prefix}/lib
 	mkdir -p ${prefix}/include
-	cp libscpbr.so ${prefix}/lib
-	cp libscpbr.a ${prefix}/lib
-	cp scpbr.h ${prefix}/include
+	cp libsjfz.so ${prefix}/lib
+	cp libsjfz.a ${prefix}/lib
+	cp sjfz.h ${prefix}/include
 
-libscpbr.a: scpbr_static.o 
+libsjfz.a: sjfz_static.o 
 	$(AR) rcs $@ $^
 
-libscpbr.so: scpbr.o
-	$(CC) -shared $(AM_CFLAGS) -o libscpbr.so $^ $(AM_LDFLAGS)
+libsjfz.so: sjfz.o
+	$(CC) -shared $(AM_CFLAGS) -o libsjfz.so $^ $(AM_LDFLAGS)
 
-scpbr.o: scpbr.c
+sjfz.o: sjfz.c
 	$(CC) -fPIC -DDYNAMIC_LIBRARY -o $@ -c $^ $(AM_CFLAGS)
 	
-scpbr_static.o: scpbr.c
+sjfz_static.o: sjfz.c
 	$(CC) -o $@ -c $^ $(AM_CFLAGS)
 	
 clean:

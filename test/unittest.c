@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <getopt.h>
 #include "unittest_defs.h"
-#include "test_scpbr_exec.h"
+#include "test_sjfz_exec.h"
 
 
 int main (int argc, char *argv[])
@@ -17,7 +17,7 @@ int main (int argc, char *argv[])
   }
 
   /* Run test suites */
-  suite_scpbr_exec(xmldir);
+  suite_sjfz_exec(xmldir);
 
   return 0;
 }

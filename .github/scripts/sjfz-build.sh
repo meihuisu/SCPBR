@@ -15,7 +15,7 @@ cd ..
 aclocal
 automake --add-missing
 autoconf
-./configure --prefix=$UCVM_INSTALL_PATH/model/scpbr
+./configure --prefix=$UCVM_INSTALL_PATH/model/sjfz
 make
 make install
 

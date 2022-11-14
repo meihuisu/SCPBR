@@ -5,15 +5,15 @@ authors:
   given-names: ""
 keywords: UCVM, research
 license: BSD-3-Clause
-repository-code: "https://github.com/SCECcode/scpbr.git"
-title: "Southern California Plate Boundary Region(scpbr)"
+repository-code: "https://github.com/SCECcode/sjfz.git"
+title: "San Jacinto Fault Zone velocity model(sjfz)"
 version: 3.0
 type: software
-date-released: 2022-10-31
-repository-code: "https://github.com/SCECcode/scpbr.git"
+date-released: 2022-11-15
+repository-code: "https://github.com/SCECcode/sjfz.git"
 contact:
   - email: software@scec.org
-    name: "The SCEC Software project scpbr"
+    name: "The SCEC Software project sjfz"
 references:
   - authors:
       - family-names: "Fang"

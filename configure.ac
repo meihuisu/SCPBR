@@ -1,7 +1,7 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_INIT([SCPBR],[1.0],[mei@usc.edu])
+AC_INIT([SJFZ],[1.0],[mei@usc.edu])
 AC_CONFIG_SRCDIR([src])
 AM_INIT_AUTOMAKE([foreign no-exeext])
 

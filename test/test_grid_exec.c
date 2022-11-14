@@ -15,7 +15,7 @@
 #include "test_helper.h"
 #include "test_grid_exec.h"
 
-int test_scpbr_grid_depth()
+int test_sjfz_grid_depth()
 {
   char infile[1280];
   char outfile[1280];
@@ -31,9 +31,9 @@ int test_scpbr_grid_depth()
   sprintf(outfile, "%s/%s", currentdir, "test-grid.out");
   sprintf(reffile, "%s/%s", currentdir, "./ref/test-grid.ref");
 
-  if (test_assert_int(runSCPBR(BIN_DIR, MODEL_DIR,infile, outfile,
+  if (test_assert_int(runSJFZ(BIN_DIR, MODEL_DIR,infile, outfile,
 				MODE_DEPTH), 0) != 0) {
-    printf("scpbr failure\n");
+    printf("sjfz failure\n");
     return(1);
   }
 
@@ -69,8 +69,8 @@ int suite_grid_exec(const char *xmldir)
   test_get_time(&suite.exec_time);
 
   /* Setup test cases */
-  strcpy(suite.tests[0].test_name, "test_scpbr_grid_depth");
-  suite.tests[0].test_func = &test_scpbr_grid_depth;
+  strcpy(suite.tests[0].test_name, "test_sjfz_grid_depth");
+  suite.tests[0].test_func = &test_sjfz_grid_depth;
   suite.tests[0].elapsed_time = 0.0;
 
   if (test_run_suite(&suite) != 0) {

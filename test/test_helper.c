@@ -12,15 +12,15 @@
 #include "test_helper.h"
 
 int debug_mode=0;
-scpbr_surf_t test_surfs[100];
+sjfz_surf_t test_surfs[100];
 int test_surfs_cnt=0;
 
-double init_preset_ucvm_surface(scpbr_surf_t *surfs) {
+double init_preset_ucvm_surface(sjfz_surf_t *surfs) {
   char fname[100];
   char line[100];
   FILE *fp;
 
-  strcpy(fname,"./inputs/scpbr_ucvm_surf.dat");
+  strcpy(fname,"./inputs/sjfz_ucvm_surf.dat");
   fp = fopen(fname, "r");
   if (fp == NULL) { return(1); }
 
@@ -47,7 +47,7 @@ double get_preset_ucvm_surface(double y, double x) {
 }
 
 // get model specific test points and expected values
-int get_depth_test_point(scpbr_point_t *pt, scpbr_properties_t *expect) {
+int get_depth_test_point(sjfz_point_t *pt, sjfz_properties_t *expect) {
 
   char fname[100];
   char line[100];
@@ -55,7 +55,7 @@ int get_depth_test_point(scpbr_point_t *pt, scpbr_properties_t *expect) {
   char value[50];
   FILE *fp;
 
-  strcpy(fname,"./inputs/scpbr_depth_test_point.dat");
+  strcpy(fname,"./inputs/sjfz_depth_test_point.dat");
   fp = fopen(fname, "r");
   if (fp == NULL) { return(1); }
 
@@ -95,21 +95,21 @@ int get_depth_test_point(scpbr_point_t *pt, scpbr_properties_t *expect) {
 }
 
 /*************************************************************************/
-int runSCPBR(const char *bindir, const char *cvmdir, 
+int runSJFZ(const char *bindir, const char *cvmdir, 
 	  const char *infile, const char *outfile, int mode)
 {
-  scpbr_point_t pt;
-  scpbr_properties_t ret;
+  sjfz_point_t pt;
+  sjfz_properties_t ret;
 
   FILE *infp, *outfp;
   char line[1000];
 
   char *envstr=getenv("UCVM_INSTALL_PATH");
   if(envstr != NULL) {
-    if (test_assert_int(model_init(envstr, "scpbr"), 0) != 0) {
+    if (test_assert_int(model_init(envstr, "sjfz"), 0) != 0) {
       return(1);
     }
-  } else if (test_assert_int(model_init("..", "scpbr"), 0) != 0) {
+  } else if (test_assert_int(model_init("..", "sjfz"), 0) != 0) {
     return(1);
   }
 

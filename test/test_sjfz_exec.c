@@ -1,7 +1,7 @@
 /**
-   test_scpbr_exec.c
+   test_sjfz_exec.c
 
-   uses scpbr's model api,
+   uses sjfz's model api,
        model_init, model_query, model_finalize
 **/
 
@@ -12,10 +12,10 @@
 #include <unistd.h>
 #include <getopt.h>
 #include <assert.h>
-#include "scpbr.h"
+#include "sjfz.h"
 #include "unittest_defs.h"
 #include "test_helper.h"
-#include "test_scpbr_exec.h"
+#include "test_sjfz_exec.h"
 
 int test_setup()
 {
@@ -23,10 +23,10 @@ int test_setup()
 
   char *envstr=getenv("UCVM_INSTALL_PATH");
   if(envstr != NULL) {
-    if (test_assert_int(model_init(envstr, "scpbr"), 0) != 0) {
+    if (test_assert_int(model_init(envstr, "sjfz"), 0) != 0) {
       return(1);
     }
-  } else if (test_assert_int(model_init("..", "scpbr"), 0) != 0) {
+  } else if (test_assert_int(model_init("..", "sjfz"), 0) != 0) {
     return(1);
   }
 
@@ -42,17 +42,17 @@ int test_query_by_depth()
 {
   printf("Test: model_query() by depth\n");
 
-  scpbr_point_t pt;
-  scpbr_properties_t expect;
-  scpbr_properties_t ret;
+  sjfz_point_t pt;
+  sjfz_properties_t expect;
+  sjfz_properties_t ret;
 
 // Initialize the model, try to use Use UCVM_INSTALL_PATH
   char *envstr=getenv("UCVM_INSTALL_PATH");
   if(envstr != NULL) {
-    if (test_assert_int(model_init(envstr, "scpbr"), 0) != 0) {
+    if (test_assert_int(model_init(envstr, "sjfz"), 0) != 0) {
       return(1);
     }
-  } else if (test_assert_int(model_init("..", "scpbr"), 0) != 0) {
+  } else if (test_assert_int(model_init("..", "sjfz"), 0) != 0) {
     return(1);
   }
 
@@ -88,8 +88,8 @@ int test_query_points_by_depth()
   printf("Test: model_query() points by depth\n");
 
   FILE  *infp, *outfp;
-  scpbr_point_t pt;
-  scpbr_properties_t ret;
+  sjfz_point_t pt;
+  sjfz_properties_t ret;
 
   char infile[1280];
   char outfile[1280];
@@ -118,10 +118,10 @@ int test_query_points_by_depth()
 
   char *envstr=getenv("UCVM_INSTALL_PATH");
   if(envstr != NULL) {
-    if (test_assert_int(model_init(envstr, "scpbr"), 0) != 0) {
+    if (test_assert_int(model_init(envstr, "sjfz"), 0) != 0) {
       return _failure("model_init failed");
     }
-  } else if (test_assert_int(model_init("..", "scpbr"), 0) != 0) {
+  } else if (test_assert_int(model_init("..", "sjfz"), 0) != 0) {
     return _failure("model_init failed");
   }
 
@@ -159,14 +159,14 @@ int test_query_points_by_depth()
 }
 
 
-int suite_scpbr_exec(const char *xmldir)
+int suite_sjfz_exec(const char *xmldir)
 {
   suite_t suite;
   char logfile[256];
   FILE *lf = NULL;
 
   /* Setup test suite */
-  strcpy(suite.suite_name, "suite_scpbr_exec");
+  strcpy(suite.suite_name, "suite_sjfz_exec");
 
   suite.num_tests = 3;
   suite.tests = malloc(suite.num_tests * sizeof(test_t));

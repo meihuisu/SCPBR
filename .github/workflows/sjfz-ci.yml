@@ -1,11 +1,11 @@
-name: scpbr-ci
+name: sjfz-ci
 
 on:
   push:
     branches: [ main ]
 
 jobs:
-  scpbr-build-standalone-mac:
+  sjfz-build-standalone-mac:
     runs-on: macos-latest
     strategy:
       matrix:
@@ -15,18 +15,18 @@ jobs:
       run: echo "UCVM_SRC_PATH=$RUNNER_WORKSPACE/ucvm" >> $GITHUB_ENV
     - name: set UCVM_INSTALL_PATH 
       run: echo "UCVM_INSTALL_PATH=$RUNNER_WORKSPACE/target" >> $GITHUB_ENV
-    - name: checkout scpbr main
+    - name: checkout sjfz main
       uses: actions/checkout@v2
       with: 
         ref: main
-    - name: build scpbr
-      run: ./.github/scripts/scpbr-build.sh 
+    - name: build sjfz
+      run: ./.github/scripts/sjfz-build.sh 
       shell: bash
-    - name: test scpbr standalone
-      run: ./.github/scripts/scpbr-test-standalone.sh
+    - name: test sjfz standalone
+      run: ./.github/scripts/sjfz-test-standalone.sh
       shell: bash
 
-  scpbr-build-standalone-linux:
+  sjfz-build-standalone-linux:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -36,12 +36,12 @@ jobs:
       run: echo "UCVM_SRC_PATH=$RUNNER_WORKSPACE/ucvm" >> $GITHUB_ENV
     - name: set UCVM_INSTALL_PATH 
       run: echo "UCVM_INSTALL_PATH=$RUNNER_WORKSPACE/target" >> $GITHUB_ENV
-    - name: checkout scpbr main
+    - name: checkout sjfz main
       uses: actions/checkout@v2
       with: 
         ref: main
-    - name: build scpbr
-      run: ./.github/scripts/scpbr-build.sh
+    - name: build sjfz
+      run: ./.github/scripts/sjfz-build.sh
       shell: bash
 #    - name: Start SSH via Ngrok
 #      if: ${{ failure() }}
@@ -50,7 +50,7 @@ jobs:
 #            NGROK_AUTH_TOKEN: ${{ secrets.NGROK_TOKEN }}
 #            NGROK_TIMEOUT: 3000
 #            SSH_PASS: ${{ secrets.NGROK_SECRET }}
-    - name: test scpbr standalone
-      run: ./.github/scripts/scpbr-test-standalone.sh
+    - name: test sjfz standalone
+      run: ./.github/scripts/sjfz-test-standalone.sh
       shell: bash
 

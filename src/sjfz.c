@@ -1,44 +1,44 @@
 /**
- * @file scpbr.c
- * @brief Main file for SCPBR library.
+ * @file sjfz.c
+ * @brief Main file for SJFZ library.
  * @author - SCEC 
  * @version 1.0
  *
  * @section DESCRIPTION
  *
- * Delivers Southern California Plate Boundary Region Velocity Model
+ * Delivers San Jacinto Fault Zone velocity model
  *
  */
 
-#include "scpbr.h"
+#include "sjfz.h"
 
 /************ Constants and Variables ********/
 /** The version of the model. */
-const char *scpbr_version_string = "SCPBR";
+const char *sjfz_version_string = "SJFZ";
 
 // Variables
 /** Set to 1 when the model is ready for query. */
-int scpbr_is_initialized = 0;
+int sjfz_is_initialized = 0;
 
 /** Location of the binary data files. */
-char scpbr_data_directory[128];
+char sjfz_data_directory[128];
 
 /** Configuration parameters. */
-scpbr_configuration_t *scpbr_configuration;
+sjfz_configuration_t *sjfz_configuration;
 /** Holds pointers to the velocity model data OR indicates it can be read from file. */
-scpbr_model_t *scpbr_velocity_model;
+sjfz_model_t *sjfz_velocity_model;
 
 /** The height of this model's region, in meters. */
-double scpbr_total_height_m = 0;
+double sjfz_total_height_m = 0;
 /** The width of this model's region, in meters. */
-double scpbr_total_width_m = 0;
+double sjfz_total_width_m = 0;
 
 /** The config of the model */
-char *scpbr_config_string=NULL;
-int scpbr_config_sz=0;
+char *sjfz_config_string=NULL;
+int sjfz_config_sz=0;
 
 /**
- * Initializes the SCPBR plugin model within the UCVM framework. In order to initialize
+ * Initializes the SJFZ plugin model within the UCVM framework. In order to initialize
  * the model, we must provide the UCVM install path and optionally a place in memory
  * where the model already exists.
  *
@@ -46,37 +46,37 @@ int scpbr_config_sz=0;
  * @param label A unique identifier for the velocity model.
  * @return Success or failure, if initialization was successful.
  */
-int scpbr_init(const char *dir, const char *label) {
+int sjfz_init(const char *dir, const char *label) {
   char configbuf[512];
 
-  scpbr_config_string = calloc(SCPBR_CONFIG_MAX, sizeof(char));
-  scpbr_config_string[0]='\0';
-  scpbr_config_sz=0;
+  sjfz_config_string = calloc(SJFZ_CONFIG_MAX, sizeof(char));
+  sjfz_config_string[0]='\0';
+  sjfz_config_sz=0;
 
   // Initialize variables.
-  scpbr_configuration = calloc(1, sizeof(scpbr_configuration_t));
-  scpbr_velocity_model = calloc(1, sizeof(scpbr_model_t));
+  sjfz_configuration = calloc(1, sizeof(sjfz_configuration_t));
+  sjfz_velocity_model = calloc(1, sizeof(sjfz_model_t));
 
   // Configuration file location.
   sprintf(configbuf, "%s/model/%s/data/config", dir, label);
 
   // Read the configuration file.
-  if (scpbr_read_configuration(configbuf, scpbr_configuration) != UCVM_CODE_SUCCESS) {
+  if (sjfz_read_configuration(configbuf, sjfz_configuration) != UCVM_CODE_SUCCESS) {
     print_error("No configuration file was found to read from.");
     return UCVM_CODE_ERROR;
   }
 
   // Set up the data directory.
-  sprintf(scpbr_data_directory, "%s/model/%s/data/%s", dir, label, scpbr_configuration->model_dir);
+  sprintf(sjfz_data_directory, "%s/model/%s/data/%s", dir, label, sjfz_configuration->model_dir);
 
   // Can we allocate the model, or parts of it, to memory. If so, we do.
-  int rval = scpbr_try_reading_model(scpbr_velocity_model);
+  int rval = sjfz_try_reading_model(sjfz_velocity_model);
 
-  if (rval == SCPBR_DATA_FAIL) {
+  if (rval == SJFZ_DATA_FAIL) {
     print_error("No model file was found to read from.");
     return UCVM_CODE_ERROR;
   }
-  if( rval != SCPBR_DATA_SUCCESS) { // not all is read inmemory 
+  if( rval != SJFZ_DATA_SUCCESS) { // not all is read inmemory 
     fprintf(stderr, "WARNING: Could not load model into memory. Reading the model from the\n");
     fprintf(stderr, "hard disk may result in slow performance.");
   }
@@ -86,41 +86,41 @@ int scpbr_init(const char *dir, const char *label) {
   // point so that is is somewhere between (0,0) and (total_width_m, total_height_m). How far along
   // the X and Y axis determines which grid points we use for the interpolation routine.
 
-  scpbr_total_height_m = sqrt(pow(scpbr_configuration->top_left_corner_lat - scpbr_configuration->bottom_left_corner_lat, 2.0f) +
-              pow(scpbr_configuration->top_left_corner_lon - scpbr_configuration->bottom_left_corner_lon, 2.0f));
-  scpbr_total_width_m  = sqrt(pow(scpbr_configuration->top_right_corner_lat - scpbr_configuration->top_left_corner_lat, 2.0f) +
-              pow(scpbr_configuration->top_right_corner_lon - scpbr_configuration->top_left_corner_lon, 2.0f));
+  sjfz_total_height_m = sqrt(pow(sjfz_configuration->top_left_corner_lat - sjfz_configuration->bottom_left_corner_lat, 2.0f) +
+              pow(sjfz_configuration->top_left_corner_lon - sjfz_configuration->bottom_left_corner_lon, 2.0f));
+  sjfz_total_width_m  = sqrt(pow(sjfz_configuration->top_right_corner_lat - sjfz_configuration->top_left_corner_lat, 2.0f) +
+              pow(sjfz_configuration->top_right_corner_lon - sjfz_configuration->top_left_corner_lon, 2.0f));
 
   /* setup config_string */
-  sprintf(scpbr_config_string,"config = %s\n",configbuf);
-  scpbr_config_sz=1;
+  sprintf(sjfz_config_string,"config = %s\n",configbuf);
+  sjfz_config_sz=1;
 
   // Let everyone know that we are initialized and ready for business.
-  scpbr_is_initialized = 1;
+  sjfz_is_initialized = 1;
 
   return UCVM_CODE_SUCCESS;
 }
 
 /**
- * Queries SCPBR at the given points and returns the data that it finds.
+ * Queries SJFZ at the given points and returns the data that it finds.
  *
  * @param points The points at which the queries will be made.
  * @param data The data that will be returned (Vp, Vs, density, Qs, and/or Qp).
  * @param numpoints The total number of points to query.
  * @return SUCCESS or FAIL.
  */
-int scpbr_query(scpbr_point_t *points, scpbr_properties_t *data, int numpoints) {
+int sjfz_query(sjfz_point_t *points, sjfz_properties_t *data, int numpoints) {
   int i = 0;
   int load_x_coord = 0, load_y_coord = 0, load_z_coord = 0;
   double x_percent = 0, y_percent = 0, z_percent = 0;
-  scpbr_properties_t surrounding_points[8];
+  sjfz_properties_t surrounding_points[8];
   double lon_e, lat_n;
 
   int zone = 11;
   int longlat2utm = 0;
 
-  double delta_lon = (scpbr_configuration->top_right_corner_lon - scpbr_configuration->bottom_left_corner_lon)/(scpbr_configuration->nx - 1);
-  double delta_lat = (scpbr_configuration->top_right_corner_lat - scpbr_configuration->bottom_left_corner_lat)/(scpbr_configuration->ny - 1);
+  double delta_lon = (sjfz_configuration->top_right_corner_lon - sjfz_configuration->bottom_left_corner_lon)/(sjfz_configuration->nx - 1);
+  double delta_lat = (sjfz_configuration->top_right_corner_lat - sjfz_configuration->bottom_left_corner_lat)/(sjfz_configuration->ny - 1);
 
   for (i = 0; i < numpoints; i++) {
     lon_e = points[i].longitude; 
@@ -128,15 +128,15 @@ int scpbr_query(scpbr_point_t *points, scpbr_properties_t *data, int numpoints) 
 //fprintf(stderr,">>>>>>>>>working on i >> %d <<<<<<<<< %lf %lf\n",i, lon_e, lat_n);
 
     // Which point base point does that correspond to?
-    load_y_coord = (int)(round((lat_n - scpbr_configuration->bottom_left_corner_lat) / delta_lat));
-    load_x_coord = (int)(round((lon_e - scpbr_configuration->bottom_left_corner_lon) / delta_lon));
+    load_y_coord = (int)(round((lat_n - sjfz_configuration->bottom_left_corner_lat) / delta_lat));
+    load_x_coord = (int)(round((lon_e - sjfz_configuration->bottom_left_corner_lon) / delta_lon));
     load_z_coord = (int)((points[i].depth)/1000);
 
 //fprintf(stderr,"coord %d %d %d\n", load_x_coord, load_y_coord, load_z_coord);
 
     // Are we outside the model's X and Y and Z boundaries?
-    if (points[i].depth > scpbr_configuration->depth || load_x_coord > scpbr_configuration->nx -1  
-                   || load_y_coord > scpbr_configuration->ny -1 || load_x_coord < 0 || load_y_coord < 0 || load_z_coord < 0) {
+    if (points[i].depth > sjfz_configuration->depth || load_x_coord > sjfz_configuration->nx -1  
+                   || load_y_coord > sjfz_configuration->ny -1 || load_x_coord < 0 || load_y_coord < 0 || load_z_coord < 0) {
       data[i].vp = -1;
       data[i].vs = -1;
       data[i].rho = -1;
@@ -144,49 +144,49 @@ int scpbr_query(scpbr_point_t *points, scpbr_properties_t *data, int numpoints) 
     }
 
     // Get the X, Y, and Z percentages for the bilinear or trilinear interpolation below.
-    x_percent =fmod((lon_e - scpbr_configuration->bottom_left_corner_lon), delta_lon) /delta_lon;
-    y_percent = fmod((lat_n - scpbr_configuration->bottom_left_corner_lat), delta_lat)/
+    x_percent =fmod((lon_e - sjfz_configuration->bottom_left_corner_lon), delta_lon) /delta_lon;
+    y_percent = fmod((lat_n - sjfz_configuration->bottom_left_corner_lat), delta_lat)/
 delta_lat;
-    z_percent = fmod(points[i].depth, scpbr_configuration->depth_interval) / scpbr_configuration->depth_interval;
+    z_percent = fmod(points[i].depth, sjfz_configuration->depth_interval) / sjfz_configuration->depth_interval;
 
 //fprintf(stderr,"percent %lf %lf %lf\n", x_percent, y_percent, z_percent);
     if (load_z_coord == 0 && z_percent == 0) {
       // We're below the model boundaries. Bilinearly interpolate the bottom plane and use that value.
       load_z_coord = 0;
-      if(scpbr_configuration->interpolation) {
+      if(sjfz_configuration->interpolation) {
 
         // Get the four properties.
-        scpbr_read_properties(load_x_coord,     load_y_coord,     load_z_coord,     &(surrounding_points[0]));  // Orgin.
-        scpbr_read_properties(load_x_coord + 1, load_y_coord,     load_z_coord,     &(surrounding_points[1]));  // Orgin + 1x
-        scpbr_read_properties(load_x_coord,     load_y_coord + 1, load_z_coord,     &(surrounding_points[2]));  // Orgin + 1y
-        scpbr_read_properties(load_x_coord + 1, load_y_coord + 1, load_z_coord,     &(surrounding_points[3]));  // Orgin + x + y, forms top plane.
+        sjfz_read_properties(load_x_coord,     load_y_coord,     load_z_coord,     &(surrounding_points[0]));  // Orgin.
+        sjfz_read_properties(load_x_coord + 1, load_y_coord,     load_z_coord,     &(surrounding_points[1]));  // Orgin + 1x
+        sjfz_read_properties(load_x_coord,     load_y_coord + 1, load_z_coord,     &(surrounding_points[2]));  // Orgin + 1y
+        sjfz_read_properties(load_x_coord + 1, load_y_coord + 1, load_z_coord,     &(surrounding_points[3]));  // Orgin + x + y, forms top plane.
 
-        scpbr_bilinear_interpolation(x_percent, y_percent, surrounding_points, &(data[i]));
+        sjfz_bilinear_interpolation(x_percent, y_percent, surrounding_points, &(data[i]));
         } else {
-          scpbr_read_properties(load_x_coord,     load_y_coord,     load_z_coord,     &(data[i]));  // Orgin.
+          sjfz_read_properties(load_x_coord,     load_y_coord,     load_z_coord,     &(data[i]));  // Orgin.
       }
 
       } else {
-        if( scpbr_configuration->interpolation) {
+        if( sjfz_configuration->interpolation) {
       // Read all the surrounding point properties.
-          scpbr_read_properties(load_x_coord,     load_y_coord,     load_z_coord,     &(surrounding_points[0]));  // Orgin.
-          scpbr_read_properties(load_x_coord + 1, load_y_coord,     load_z_coord,     &(surrounding_points[1]));  // Orgin + 1x
-          scpbr_read_properties(load_x_coord,     load_y_coord + 1, load_z_coord,     &(surrounding_points[2]));  // Orgin + 1y
-          scpbr_read_properties(load_x_coord + 1, load_y_coord + 1, load_z_coord,     &(surrounding_points[3]));  // Orgin + x + y, forms top plane.
-          scpbr_read_properties(load_x_coord,     load_y_coord,     load_z_coord - 1, &(surrounding_points[4]));  // Bottom plane origin
-          scpbr_read_properties(load_x_coord + 1, load_y_coord,     load_z_coord - 1, &(surrounding_points[5]));  // +1x
-          scpbr_read_properties(load_x_coord,     load_y_coord + 1, load_z_coord - 1, &(surrounding_points[6]));  // +1y
-          scpbr_read_properties(load_x_coord + 1, load_y_coord + 1, load_z_coord - 1, &(surrounding_points[7]));  // +x +y, forms bottom plane.
+          sjfz_read_properties(load_x_coord,     load_y_coord,     load_z_coord,     &(surrounding_points[0]));  // Orgin.
+          sjfz_read_properties(load_x_coord + 1, load_y_coord,     load_z_coord,     &(surrounding_points[1]));  // Orgin + 1x
+          sjfz_read_properties(load_x_coord,     load_y_coord + 1, load_z_coord,     &(surrounding_points[2]));  // Orgin + 1y
+          sjfz_read_properties(load_x_coord + 1, load_y_coord + 1, load_z_coord,     &(surrounding_points[3]));  // Orgin + x + y, forms top plane.
+          sjfz_read_properties(load_x_coord,     load_y_coord,     load_z_coord - 1, &(surrounding_points[4]));  // Bottom plane origin
+          sjfz_read_properties(load_x_coord + 1, load_y_coord,     load_z_coord - 1, &(surrounding_points[5]));  // +1x
+          sjfz_read_properties(load_x_coord,     load_y_coord + 1, load_z_coord - 1, &(surrounding_points[6]));  // +1y
+          sjfz_read_properties(load_x_coord + 1, load_y_coord + 1, load_z_coord - 1, &(surrounding_points[7]));  // +x +y, forms bottom plane.
 
-          scpbr_trilinear_interpolation(x_percent, y_percent, z_percent, surrounding_points, &(data[i]));
+          sjfz_trilinear_interpolation(x_percent, y_percent, z_percent, surrounding_points, &(data[i]));
           } else {
             // no interpolation, data as it is
-            scpbr_read_properties(load_x_coord,     load_y_coord,     load_z_coord,     &(data[i]));  // Orgin.
+            sjfz_read_properties(load_x_coord,     load_y_coord,     load_z_coord,     &(data[i]));  // Orgin.
         }
     }
 
-    data[i].rho = scpbr_calculate_density(data[i].vp);
-// XXX         data[i].vs = scpbr_calculate_vs(data[i].vp);
+    data[i].rho = sjfz_calculate_density(data[i].vp);
+// XXX         data[i].vs = sjfz_calculate_vs(data[i].vp);
   }
 
   return UCVM_CODE_SUCCESS;
@@ -201,7 +201,7 @@ delta_lat;
  * @param z The z coordinate of the data point.
  * @param data The properties struct to which the material properties will be written.
  */
-void scpbr_read_properties(int x, int y, int z, scpbr_properties_t *data) {
+void sjfz_read_properties(int x, int y, int z, sjfz_properties_t *data) {
 
   // Set everything to -1 to indicate not found.
   data->vp = -1;
@@ -211,30 +211,30 @@ void scpbr_read_properties(int x, int y, int z, scpbr_properties_t *data) {
   float *ptr = NULL;
   FILE *fp = NULL;
 
-  int location = z * (scpbr_configuration->nx * scpbr_configuration->ny) + (y * scpbr_configuration->nx) + x;
+  int location = z * (sjfz_configuration->nx * sjfz_configuration->ny) + (y * sjfz_configuration->nx) + x;
 
   // Check our loaded components of the model.
-  if (scpbr_velocity_model->vp_status == 2) {
+  if (sjfz_velocity_model->vp_status == 2) {
     // Read from memory.
-    ptr = (float *)scpbr_velocity_model->vp;
+    ptr = (float *)sjfz_velocity_model->vp;
     data->vp = ptr[location];
 //fprintf(stderr,"XX read from location memory %d, %lf\n", location, data ->vp);
-  } else if (scpbr_velocity_model->vp_status == 1) {
+  } else if (sjfz_velocity_model->vp_status == 1) {
      // Read from file.
-    fp = (FILE *)scpbr_velocity_model->vp;
+    fp = (FILE *)sjfz_velocity_model->vp;
     fseek(fp, location * sizeof(float), SEEK_SET);
     fread(&(data->vp), sizeof(float), 1, fp);
 //fprintf(stderr,"XX read from location file %d, %lf\n", location, data->vp);
   }
 
-  if (scpbr_velocity_model->vs_status == 2) {
+  if (sjfz_velocity_model->vs_status == 2) {
     // Read from memory.
-    ptr = (float *)scpbr_velocity_model->vs;
+    ptr = (float *)sjfz_velocity_model->vs;
     data->vs = ptr[location];
 //fprintf(stderr,"XX read from location memory %d, %lf\n", location, data->vs);
-  } else if (scpbr_velocity_model->vs_status == 1) {
+  } else if (sjfz_velocity_model->vs_status == 1) {
     // Read from file.
-    fp = (FILE *)scpbr_velocity_model->vs;
+    fp = (FILE *)sjfz_velocity_model->vs;
     fseek(fp, location * sizeof(float), SEEK_SET);
     fread(&(data->vs), sizeof(float), 1, fp);
 //fprintf(stderr,"XX read from location file %d, %lf\n", location, data->vs);
@@ -258,21 +258,21 @@ void scpbr_read_properties(int x, int y, int z, scpbr_properties_t *data) {
  * @param eight_points Eight surrounding data properties
  * @param ret_properties Returned data properties
  */
-void scpbr_trilinear_interpolation(double x_percent, double y_percent, double z_percent,
-           scpbr_properties_t *eight_points, scpbr_properties_t *ret_properties) {
-  scpbr_properties_t *temp_array = calloc(2, sizeof(scpbr_properties_t));
-  scpbr_properties_t *four_points = eight_points;
+void sjfz_trilinear_interpolation(double x_percent, double y_percent, double z_percent,
+           sjfz_properties_t *eight_points, sjfz_properties_t *ret_properties) {
+  sjfz_properties_t *temp_array = calloc(2, sizeof(sjfz_properties_t));
+  sjfz_properties_t *four_points = eight_points;
 
-  scpbr_bilinear_interpolation(x_percent, y_percent, four_points, &temp_array[0]);
+  sjfz_bilinear_interpolation(x_percent, y_percent, four_points, &temp_array[0]);
 
-  // Now advance the pointer four "scpbr_properties_t" spaces.
+  // Now advance the pointer four "sjfz_properties_t" spaces.
   four_points += 4;
 
   // Another interpolation.
-  scpbr_bilinear_interpolation(x_percent, y_percent, four_points, &temp_array[1]);
+  sjfz_bilinear_interpolation(x_percent, y_percent, four_points, &temp_array[1]);
 
   // Now linearly interpolate between the two.
-  scpbr_linear_interpolation(z_percent, &temp_array[0], &temp_array[1], ret_properties);
+  sjfz_linear_interpolation(z_percent, &temp_array[0], &temp_array[1], ret_properties);
 
   free(temp_array);
 }
@@ -286,13 +286,13 @@ void scpbr_trilinear_interpolation(double x_percent, double y_percent, double z_
  * @param four_points Data property plane.
  * @param ret_properties Returned data properties.
  */
-void scpbr_bilinear_interpolation(double x_percent, double y_percent, scpbr_properties_t *four_points, scpbr_properties_t *ret_properties) {
+void sjfz_bilinear_interpolation(double x_percent, double y_percent, sjfz_properties_t *four_points, sjfz_properties_t *ret_properties) {
 
-  scpbr_properties_t *temp_array = calloc(2, sizeof(scpbr_properties_t));
+  sjfz_properties_t *temp_array = calloc(2, sizeof(sjfz_properties_t));
 
-  scpbr_linear_interpolation(x_percent, &four_points[0], &four_points[1], &temp_array[0]);
-  scpbr_linear_interpolation(x_percent, &four_points[2], &four_points[3], &temp_array[1]);
-  scpbr_linear_interpolation(y_percent, &temp_array[0], &temp_array[1], ret_properties);
+  sjfz_linear_interpolation(x_percent, &four_points[0], &four_points[1], &temp_array[0]);
+  sjfz_linear_interpolation(x_percent, &four_points[2], &four_points[3], &temp_array[1]);
+  sjfz_linear_interpolation(y_percent, &temp_array[0], &temp_array[1], ret_properties);
 
   free(temp_array);
 }
@@ -305,7 +305,7 @@ void scpbr_bilinear_interpolation(double x_percent, double y_percent, scpbr_prop
  * @param x1 Data point at x1.
  * @param ret_properties Resulting data properties.
  */
-void scpbr_linear_interpolation(double percent, scpbr_properties_t *x0, scpbr_properties_t *x1, scpbr_properties_t *ret_properties) {
+void sjfz_linear_interpolation(double percent, sjfz_properties_t *x0, sjfz_properties_t *x1, sjfz_properties_t *ret_properties) {
 
   ret_properties->vp  = (1 - percent) * x0->vp  + percent * x1->vp;
   ret_properties->vs  = (1 - percent) * x0->vs  + percent * x1->vs;
@@ -317,10 +317,10 @@ void scpbr_linear_interpolation(double percent, scpbr_properties_t *x0, scpbr_pr
  *
  * @return SUCCESS
  */
-int scpbr_finalize() {
-  if (scpbr_velocity_model->vp) free(scpbr_velocity_model->vp);
+int sjfz_finalize() {
+  if (sjfz_velocity_model->vp) free(sjfz_velocity_model->vp);
 
-  free(scpbr_configuration);
+  free(sjfz_configuration);
 
   return UCVM_CODE_SUCCESS;
 }
@@ -332,15 +332,15 @@ int scpbr_finalize() {
  * @param len Maximum length of buffer.
  * @return Zero
  */
-int scpbr_version(char *ver, int len)
+int sjfz_version(char *ver, int len)
 {
   int verlen;
-  verlen = strlen(scpbr_version_string);
+  verlen = strlen(sjfz_version_string);
   if (verlen > len - 1) {
     verlen = len - 1;
   }
   memset(ver, 0, len);
-  strncpy(ver, scpbr_version_string, verlen);
+  strncpy(ver, sjfz_version_string, verlen);
   return 0;
 }
 
@@ -351,12 +351,12 @@ int scpbr_version(char *ver, int len)
  * @param sz Number of config term to return.
  * @return Zero
  */
-int scpbr_config(char **config, int *sz)
+int sjfz_config(char **config, int *sz)
 {
-  int len=strlen(scpbr_config_string);
+  int len=strlen(sjfz_config_string);
   if(len > 0) {
-    *config=scpbr_config_string;
-    *sz=scpbr_config_sz;
+    *config=sjfz_config_string;
+    *sz=sjfz_config_sz;
     return UCVM_CODE_SUCCESS;
   }
   return UCVM_CODE_ERROR;
@@ -371,7 +371,7 @@ int scpbr_config(char **config, int *sz)
  * @param config The configuration struct to which the data should be written.
  * @return Success or failure, depending on if file was read successfully.
  */
-int scpbr_read_configuration(char *file, scpbr_configuration_t *config) {
+int sjfz_read_configuration(char *file, sjfz_configuration_t *config) {
   FILE *fp = fopen(file, "r");
   char key[40];
   char value[80];
@@ -453,7 +453,7 @@ int scpbr_read_configuration(char *file, scpbr_configuration_t *config) {
  * Equation 6 is the “Nafe-Drake curve” (Ludwig et al., 1970).
  * start with vp in km 
  */
-double scpbr_calculate_density(double vp) {
+double sjfz_calculate_density(double vp) {
      double retVal ;
 
      vp = vp * 0.001;
@@ -481,7 +481,7 @@ double scpbr_calculate_density(double vp) {
  * [eqn. 1] Vs (km/s) = 0.7858 – 1.2344Vp + 0.7949Vp2 – 0.1238Vp3 + 0.0064Vp4.
  * Equation 1 is valid for 1.5 < Vp < 8 km/s.
  */
-double scpbr_calculate_vs(double vp) {
+double sjfz_calculate_vs(double vp) {
      double retVal ;
 
      vp = vp * 0.001;
@@ -502,10 +502,10 @@ double scpbr_calculate_vs(double vp) {
  * @param err The error string to print out to stderr.
  */
 void print_error(char *err) {
-  fprintf(stderr, "An error has occurred while executing SCPBR. The error was:\n\n");
+  fprintf(stderr, "An error has occurred while executing SJFZ. The error was:\n\n");
   fprintf(stderr, "%s", err);
   fprintf(stderr, "\n\nPlease contact software@scec.org and describe both the error and a bit\n");
-  fprintf(stderr, "about the computer you are running SCPBR on (Linux, Mac, etc.).\n");
+  fprintf(stderr, "about the computer you are running SJFZ on (Linux, Mac, etc.).\n");
 }
 
 /**
@@ -516,15 +516,15 @@ void print_error(char *err) {
  *         0 if file is found but at least 1 is not in memory, 
  *         1 if no file found.
  */
-int scpbr_try_reading_model(scpbr_model_t *model) {
-  double base_malloc = scpbr_configuration->nx * scpbr_configuration->ny * scpbr_configuration->nz * sizeof(float);
+int sjfz_try_reading_model(sjfz_model_t *model) {
+  double base_malloc = sjfz_configuration->nx * sjfz_configuration->ny * sjfz_configuration->nz * sizeof(float);
   int file_count = 0;
   int all_read_to_memory = 1;
   char current_file[128];
   FILE *fp;
 
   // Let's see what data we actually have.
-  sprintf(current_file, "%s/vp.dat", scpbr_data_directory);
+  sprintf(current_file, "%s/vp.dat", sjfz_data_directory);
   if (access(current_file, R_OK) == 0) {
     model->vp = malloc(base_malloc);
     if (model->vp != NULL) {
@@ -532,16 +532,16 @@ int scpbr_try_reading_model(scpbr_model_t *model) {
       fp = fopen(current_file, "rb");
       fread(model->vp, 1, base_malloc, fp);
       fclose(fp);
-      model->vp_status = SCPBR_DATA_MEMORY;
+      model->vp_status = SJFZ_DATA_MEMORY;
     } else {
       all_read_to_memory = 0;
       model->vp = fopen(current_file, "rb");
-      model->vp_status = SCPBR_DATA_FILE;
+      model->vp_status = SJFZ_DATA_FILE;
     }
     file_count++;
   }
 
-  sprintf(current_file, "%s/vs.dat", scpbr_data_directory);
+  sprintf(current_file, "%s/vs.dat", sjfz_data_directory);
   if (access(current_file, R_OK) == 0) {
     model->vs = malloc(base_malloc);
     if (model->vs != NULL) {
@@ -549,22 +549,22 @@ int scpbr_try_reading_model(scpbr_model_t *model) {
       fp = fopen(current_file, "rb");
       fread(model->vs, 1, base_malloc, fp);
       fclose(fp);
-      model->vs_status = SCPBR_DATA_MEMORY;
+      model->vs_status = SJFZ_DATA_MEMORY;
     } else {
       all_read_to_memory = 0;
       model->vs = fopen(current_file, "rb");
-      model->vs_status = SCPBR_DATA_FILE;
+      model->vs_status = SJFZ_DATA_FILE;
     }
     file_count++;
   }
 
   if (file_count == 0) {
-    return SCPBR_DATA_FAIL;
+    return SJFZ_DATA_FAIL;
   }
   if (all_read_to_memory == 0) {
-    return SCPBR_DATA_USABLE;
+    return SJFZ_DATA_USABLE;
   }
-  return SCPBR_DATA_SUCCESS;
+  return SJFZ_DATA_SUCCESS;
 }
 
 // The following functions are for dynamic library mode. If we are compiling
@@ -572,73 +572,73 @@ int scpbr_try_reading_model(scpbr_model_t *model) {
 #ifdef DYNAMIC_LIBRARY
 
 /**
- * Init function loaded and called by the UCVM library. Calls scpbr_init.
+ * Init function loaded and called by the UCVM library. Calls sjfz_init.
  *
  * @param dir The directory in which UCVM is installed.
  * @return Success or failure.
  */
 int model_init(const char *dir, const char *label) {
-  return scpbr_init(dir, label);
+  return sjfz_init(dir, label);
 }
 
 /**
- * Query function loaded and called by the UCVM library. Calls scpbr_query.
+ * Query function loaded and called by the UCVM library. Calls sjfz_query.
  *
  * @param points The basic_point_t array containing the points.
  * @param data The basic_properties_t array containing the material properties returned.
  * @param numpoints The number of points in the array.
  * @return Success or fail.
  */
-int model_query(scpbr_point_t *points, scpbr_properties_t *data, int numpoints) {
-  return scpbr_query(points, data, numpoints);
+int model_query(sjfz_point_t *points, sjfz_properties_t *data, int numpoints) {
+  return sjfz_query(points, data, numpoints);
 }
 
 /**
- * Finalize function loaded and called by the UCVM library. Calls scpbr_finalize.
+ * Finalize function loaded and called by the UCVM library. Calls sjfz_finalize.
  *
  * @return Success
  */
 int model_finalize() {
-  return scpbr_finalize();
+  return sjfz_finalize();
 }
 
 /**
- * Version function loaded and called by the UCVM library. Calls scpbr_version.
+ * Version function loaded and called by the UCVM library. Calls sjfz_version.
  *
  * @param ver Version string to return.
  * @param len Maximum length of buffer.
  * @return Zero
  */
 int model_version(char *ver, int len) {
-  return scpbr_version(ver, len);
+  return sjfz_version(ver, len);
 }
 
 /** 
- * Version function loaded and called by the UCVM library. Calls scpbr_config.
+ * Version function loaded and called by the UCVM library. Calls sjfz_config.
  *                  
  * @param ver Config string to return.
  * @param sz sz of configs.
  * @return Zero
  */
 int model_config(char **config, int *sz) {
-        return scpbr_config(config, sz);
+        return sjfz_config(config, sz);
 }
 
 
 int (*get_model_init())(const char *, const char *) {
-        return &scpbr_init;
+        return &sjfz_init;
 }
-int (*get_model_query())(scpbr_point_t *, scpbr_properties_t *, int) {
-         return &scpbr_query;
+int (*get_model_query())(sjfz_point_t *, sjfz_properties_t *, int) {
+         return &sjfz_query;
 }
 int (*get_model_finalize())() {
-         return &scpbr_finalize;
+         return &sjfz_finalize;
 }
 int (*get_model_version())(char *, int) {
-         return &scpbr_version;
+         return &sjfz_version;
 }
 int (*get_model_config())(char **, int*) {
-         return &scpbr_config;
+         return &sjfz_config;
 }
 
 

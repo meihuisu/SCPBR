@@ -14,7 +14,7 @@ if sys.version_info.major >= (3) :
 else:
   from urllib2 import urlopen
 
-model = "SCPBR"
+model = "SJFZ"
 
 def usage():
     print("\n./make_data_files.py\n\n")
