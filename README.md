@@ -1,4 +1,4 @@
-# The San Jacinto Fault Zone velocity model
+# The San Jacinto Fault Zone Velocity Model
 
 <a href="https://github.com/sceccode/sjfz.git"><img src="https://github.com/sceccode/sjfz/wiki/images/sjfz_logo.png"></a>
 
@@ -9,7 +9,7 @@
 
 ## Description
 
-The San Jacinto Fault Zone velocity model
+The San Jacinto Fault Zone Velocity Model
 2019
 
 ## Table of Contents
