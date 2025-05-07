@@ -6,57 +6,37 @@
 ![GitHub repo size](https://img.shields.io/github/repo-size/sceccode/sjfz)
 [![sjfz-ucvm-ci Actions Status](https://github.com/SCECcode/sjfz/workflows/sjfz-ucvm-ci/badge.svg)](https://github.com/SCECcode/sjfz/actions)
 
-## Description
-
 The San Jacinto Fault Zone Velocity Model
-2019
-
-## Table of Contents
-1. [Software Documentation](https://github.com/SCECcode/sjfz/wiki)
-2. [Installation](#installation)
-3. [Usage](#usage)
-4. [Contributing](#contributing)
-5. [Credits](#credit)
-6. [License](#license)
 
 ## Installation
 
 This package is intended to be installed as part of the UCVM framework,
-version 22.7.0 or higher. 
+version 25.7 or higher. 
 
-This package can also be installed standalone.
+## Contact the authors
 
-$ aclocal
-$ autoconf
-$ automake --add-missing
-$ ./configure --prefix=/dir/to/install
-$ make
-$ make install
+If you would like to contact the authors regarding this software,
+please e-mail software@scec.org. Note this e-mail address should
+be used for questions regarding the software itself (e.g. how
+do I link the library properly?). Questions regarding the model's
+science (e.g. on what paper is the SFCVM based?) should be directed
+to the model's authors, located in the AUTHORS file.
 
-## Usage
+## To build in standalone mode
 
-### UCVM
+To install this package on your computer, please run the following commands:
 
-As part of [UCVM](https://github.com/SCECcode/ucvm) installation, use 'sjfz' as the model.
+<pre>
+  aclocal
+  autoreconf -fi
+  automake --add-missing
+  ./configure --prefix=/path/to/install
+  cd data; ./make_data_files.py 
+  make
+  make install
+</pre>
 
 ### sjfz_query
 
 ASCII query interface(C api) accepts points from stdin with format (lat, lon, dep (m)) and write
 data material p roperties to stdout.
-
-## Support
-Support for SJFZ is provided by the Southern California Earthquake Center
-(SCEC) Research Computing Group.  Users can report issues and feature requests
-using SJFZ' github-based issue tracking link below. Developers will also
-respond to emails sent to the SCEC software contact listed below.
-1. [SJFZ Github Issue Tracker](https://github.com/SCECcode/sjfz/issues)
-2. Email Contact: software@scec.usc.edu
-
-## Credits
-
-## Contributing
-We welcome contributions to the SJFZ, please contact us at software@scec.usc.edu.
-
-## License
-This software is distributed under the BSD 3-Clause open-source license.
-Please see the [LICENSE.txt](LICENSE.txt) file for more information.
