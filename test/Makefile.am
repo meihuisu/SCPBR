@@ -40,3 +40,5 @@ install:
 	mkdir -p ${prefix}/test
 	cp -R inputs ${prefix}/test
 	cp -R ref ${prefix}/ref
+	cp unittest ${prefix}/test
+	cp accepttest ${prefix}/test

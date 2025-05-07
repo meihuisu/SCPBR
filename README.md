@@ -4,15 +4,14 @@
 
 [![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 ![GitHub repo size](https://img.shields.io/github/repo-size/sceccode/sjfz)
-[![sjfz-ci Actions Status](https://github.com/SCECcode/sjfz/workflows/sjfz-ci/badge.svg)](https://github.com/SCECcode/sjfz/actions)
 [![sjfz-ucvm-ci Actions Status](https://github.com/SCECcode/sjfz/workflows/sjfz-ucvm-ci/badge.svg)](https://github.com/SCECcode/sjfz/actions)
 
-The San Jacinto Fault Zone velocity model
+The San Jacinto Fault Zone Velocity Model
 
 ## Installation
 
 This package is intended to be installed as part of the UCVM framework,
-version 25.x or higher. 
+version 25.7 or higher. 
 
 ## Contact the authors
 
@@ -35,7 +34,6 @@ To install this package on your computer, please run the following commands:
   make
   make install
 </pre>
-
 
 ### sjfz_query
 
