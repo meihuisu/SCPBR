@@ -2,7 +2,7 @@ name: sjfz-ucvm-ci
 
 on:
   push:
-    branches: [ foo ]
+    branches: [ main ]
 
 jobs:
   sjfz-build-ucvm-linux:
