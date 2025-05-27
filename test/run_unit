@@ -1,11 +1,11 @@
 #!/bin/bash
 
-if [ "x${UCVM_INSTALL_PATH}" != "x" ]; then
-  if [ -f ${UCVM_INSTALL_PATH}/conf/ucvm_env.sh ]; then
+if [[ ! -z "${UCVM_INSTALL_PATH}" ]]; then
+  if [[ -f ${UCVM_INSTALL_PATH}/conf/ucvm_env.sh ]]; then
      source ${UCVM_INSTALL_PATH}/conf/ucvm_env.sh
      ./unittest
     exit
   fi
 fi
 
-env DYLD_LIBRARY_PATH=../src LD_LIBRARY_PATH=../src ./unittest
+env DYLD_LIBRARY_PATH=../src:${DYLD_LIBRARY_PATH} LD_LIBRARY_PATH=../src:${LD_LIBRARY_PATH} ./unittest
